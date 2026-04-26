@@ -1,0 +1,357 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f5f6fa;
+  color: #2d3436;
+}
+
+.sidebar {
+  width: 240px;
+  min-height: 100vh;
+  background: #1e272e;
+  color: white;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.sidebar .logo {
+  padding: 20px 24px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #74b9ff;
+  border-bottom: 1px solid #2d3436;
+  margin-bottom: 8px;
+}
+
+.sidebar .nav-item {
+  padding: 12px 24px;
+  cursor: pointer;
+  color: #b2bec3;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.sidebar .nav-item:hover,
+.sidebar .nav-item.active {
+  background: #0984e3;
+  color: white;
+}
+
+.sidebar .logout {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 16px 24px;
+  color: #b2bec3;
+  cursor: pointer;
+  border-top: 1px solid #2d3436;
+  font-size: 14px;
+}
+
+.sidebar .logout:hover {
+  color: white;
+  background: #c0392b;
+}
+
+.main-content {
+  margin-left: 240px;
+  padding: 28px;
+  min-height: 100vh;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-header h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #2d3436;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  text-align: center;
+}
+
+.stat-card .number {
+  font-size: 32px;
+  font-weight: 700;
+  color: #0984e3;
+}
+
+.stat-card .label {
+  font-size: 13px;
+  color: #636e72;
+  margin-top: 4px;
+}
+
+.card-box {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.badge-role {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.badge-admin { background: #eeedfe; color: #3c3489; }
+.badge-manager { background: #faeeda; color: #633806; }
+.badge-user { background: #e1f5ee; color: #085041; }
+.badge-guest { background: #e6f1fb; color: #0c447c; }
+.badge-super { background: #fbeaf0; color: #72243e; }
+.badge-active { background: #eaf3de; color: #27500a; }
+.badge-blocked { background: #fcebeb; color: #791f1f; }
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0984e3, #1e272e);
+}
+
+.auth-card {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.auth-card .logo {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.auth-card .logo h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0984e3;
+}
+
+.auth-card .logo p {
+  color: #636e72;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #2d3436;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #dfe6e9;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-control:focus {
+  border-color: #0984e3;
+  box-shadow: 0 0 0 3px rgba(9,132,227,0.1);
+}
+
+.btn-primary {
+  background: #0984e3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 11px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background: #0773c5;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #2d3436;
+  border: 1px solid #dfe6e9;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #f5f6fa;
+}
+
+.btn-danger {
+  background: transparent;
+  color: #c0392b;
+  border: 1px solid #e17373;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn-edit {
+  background: transparent;
+  color: #0984e3;
+  border: 1px solid #74b9ff;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th {
+  background: #f5f6fa;
+  padding: 11px 16px;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #636e72;
+  font-weight: 600;
+  text-align: left;
+  letter-spacing: 0.5px;
+}
+
+table td {
+  padding: 13px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+table tr:last-child td {
+  border-bottom: none;
+}
+
+table tr:hover td {
+  background: #f9f9f9;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #e6f1fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0984e3;
+  flex-shrink: 0;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background: white;
+  border-radius: 14px;
+  padding: 28px;
+  width: 100%;
+  max-width: 440px;
+}
+
+.modal-box h5 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.modal-box p {
+  font-size: 13px;
+  color: #636e72;
+  margin-bottom: 18px;
+}
+
+.alert-error {
+  background: #fcebeb;
+  color: #791f1f;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.alert-success {
+  background: #eaf3de;
+  color: #27500a;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.toggle-switch {
+  width: 40px;
+  height: 22px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  padding: 0 3px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.toggle-on { background: #0984e3; justify-content: flex-end; }
+.toggle-off { background: #dfe6e9; justify-content: flex-start; }
+
+.toggle-knob {
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+}
