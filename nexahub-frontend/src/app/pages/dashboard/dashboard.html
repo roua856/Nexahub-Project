@@ -1,1 +1,83 @@
-<p>dashboard works!</p>
+<div style="display:flex">
+  <app-sidebar></app-sidebar>
+  <div class="main-content">
+
+    <div class="page-header">
+      <h2>Dashboard</h2>
+      <span style="font-size:13px; color:#636e72;">
+        Welcome, {{ user?.nom }} · {{ user?.company }}
+      </span>
+    </div>
+
+    <!-- Stats -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="number">{{ totalUsers }}</div>
+          <div class="label">Total users</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="number">{{ totalRoles }}</div>
+          <div class="label">Roles</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="number">{{ blockedUsers }}</div>
+          <div class="label">Blocked users</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="number">{{ actionsToday }}</div>
+          <div class="label">Actions today</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent activity -->
+    <div class="card-box">
+      <h5 style="font-weight:600; margin-bottom:16px;">Recent activity</h5>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>User</th>
+            <th>Action</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let action of recentActions">
+            <td style="color:#636e72; font-size:12px;">
+              {{ action.dateAction | date:'HH:mm' }}
+            </td>
+            <td>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <div class="avatar">
+                  {{ action.utilisateur?.nom?.charAt(0)?.toUpperCase() }}
+                </div>
+                {{ action.utilisateur?.nom }}
+              </div>
+            </td>
+            <td>
+              <span [class]="getBadgeClass(action.action)">
+                {{ action.action }}
+              </span>
+            </td>
+            <td style="color:#636e72;">{{ action.details }}</td>
+          </tr>
+          <tr *ngIf="recentActions.length === 0">
+            <td colspan="4"
+                style="text-align:center; color:#636e72; padding:30px;">
+              No activity yet
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
