@@ -1,1 +1,31 @@
-<p>sidebar works!</p>
+<div class="sidebar">
+
+  <div class="logo">
+    🔐 NexaHub
+  </div>
+
+  <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
+    📊 Dashboard
+  </a>
+
+  <a class="nav-item" routerLink="/users" routerLinkActive="active">
+    👥 Users
+  </a>
+
+  <a *ngIf="isAdmin()" class="nav-item" routerLink="/roles" routerLinkActive="active">
+    🛡️ Roles & Permissions
+  </a>
+
+  <a *ngIf="isAdmin()" class="nav-item" routerLink="/audit" routerLinkActive="active">
+    📋 Audit Log
+  </a>
+
+  <a class="nav-item" routerLink="/profile" routerLinkActive="active">
+    👤 My Profile
+  </a>
+
+  <div class="logout" (click)="logout()">
+    🚪 Logout
+  </div>
+
+</div>
