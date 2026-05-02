@@ -1,1 +1,76 @@
-<p>super-admin works!</p>
+<div style="display:flex">
+
+  <!-- Super Admin Sidebar -->
+  <div class="sidebar">
+    <div class="logo">🔐 NexaHub</div>
+    <div class="nav-item active">🏢 Companies</div>
+    <div class="logout" (click)="logout()">🚪 Logout</div>
+  </div>
+
+  <div class="main-content">
+
+    <div class="page-header">
+      <h2>Super Admin — Platform Overview</h2>
+      <div style="font-size:13px; color:#636e72;">
+        Welcome, {{ user?.nom }}
+        <span class="badge-role badge-super" style="margin-left:8px;">
+          SUPER_ADMIN
+        </span>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="number">{{ companies.length }}</div>
+          <div class="label">Total companies</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="number">{{ totalUsers }}</div>
+          <div class="label">Total users</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="number">{{ companies.length }}</div>
+          <div class="label">Active workspaces</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Companies table -->
+    <div class="card-box">
+      <h5 style="font-weight:600; margin-bottom:16px;">All companies</h5>
+      <table>
+        <thead>
+          <tr>
+            <th>Company name</th>
+            <th>Total users</th>
+            <th>Active users</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let company of companies">
+            <td style="font-weight:500;">{{ company.name }}</td>
+            <td>{{ company.totalUsers }}</td>
+            <td>{{ company.activeUsers }}</td>
+            <td>
+              <span class="badge-role badge-active">Active</span>
+            </td>
+          </tr>
+          <tr *ngIf="companies.length === 0">
+            <td colspan="4"
+                style="text-align:center; color:#636e72; padding:30px;">
+              No companies yet
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
