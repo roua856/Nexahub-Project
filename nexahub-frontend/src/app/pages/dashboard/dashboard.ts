@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { SidebarComponent } from '../../components/sidebar/sidebar';
@@ -27,7 +27,8 @@ export class Dashboard implements OnInit {
     private userService: UserService,
     private roleService: RoleService,
     private historiqueService: HistoriqueService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.user = this.authService.getUser();
   }
@@ -41,15 +42,20 @@ export class Dashboard implements OnInit {
       next: (users) => {
         this.totalUsers = users.length;
         this.blockedUsers = users.filter(u => !u.actif).length;
+        this.cdr.detectChanges();
       }
     });
     this.roleService.getAll().subscribe({
-      next: (roles) => this.totalRoles = roles.length
+      next: (roles) => {
+        this.totalRoles = roles.length;
+        this.cdr.detectChanges();
+      }
     });
     this.historiqueService.getByCompany(this.user.company).subscribe({
       next: (actions) => {
         this.recentActions = actions.slice(0, 5);
         this.actionsToday = actions.length;
+        this.cdr.detectChanges();
       }
     });
   }

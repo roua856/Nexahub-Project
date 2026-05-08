@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../components/sidebar/sidebar';
 import { HistoriqueService } from '../../services/historique';
@@ -21,7 +21,8 @@ export class Audit implements OnInit {
 
   constructor(
     private historiqueService: HistoriqueService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -30,6 +31,7 @@ export class Audit implements OnInit {
       next: (data) => {
         this.actions = data;
         this.filtered = data;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -39,6 +41,7 @@ export class Audit implements OnInit {
     this.filtered = f === 'ALL'
       ? this.actions
       : this.actions.filter(a => a.action === f);
+    this.cdr.detectChanges();
   }
 
   getBadgeClass(action: string): string {

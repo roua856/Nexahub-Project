@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../../components/sidebar/sidebar';
@@ -26,7 +26,8 @@ export class Roles implements OnInit {
 
   constructor(
     private roleService: RoleService,
-    private permissionService: PermissionService
+    private permissionService: PermissionService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -35,21 +36,30 @@ export class Roles implements OnInit {
   }
 
   loadRoles(): void {
-    this.roleService.getAll().subscribe(r => {
-      this.roles = r.filter(role =>
-        role.nom !== 'SUPER_ADMIN' && role.nom !== 'USER'
-      );
+    this.roleService.getAll().subscribe({
+      next: (r) => {
+        this.roles = r.filter(role =>
+          role.nom !== 'SUPER_ADMIN' && role.nom !== 'USER'
+        );
+        this.cdr.detectChanges();
+      }
     });
   }
 
   loadPermissions(): void {
-    this.permissionService.getAll().subscribe(p => this.permissions = p);
+    this.permissionService.getAll().subscribe({
+      next: (p) => {
+        this.permissions = p;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   selectRole(role: Role): void {
     this.selectedRole = role;
     this.selectedPermissions = role.permissions?.map(p => p.id) || [];
     this.saveMessage = '';
+    this.cdr.detectChanges();
   }
 
   createRole(): void {
@@ -91,7 +101,10 @@ export class Roles implements OnInit {
     ).subscribe(() => {
       this.saveMessage = 'Permissions saved successfully!';
       this.loadRoles();
-      setTimeout(() => this.saveMessage = '', 3000);
+      setTimeout(() => {
+        this.saveMessage = '';
+        this.cdr.detectChanges();
+      }, 3000);
     });
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../../components/sidebar/sidebar';
@@ -23,29 +23,35 @@ export class Users implements OnInit {
   loading = false;
   inviteLoading = false;
   inviteError = '';
-
   inviteData = { nom: '', email: '', motDePasse: '', roleId: '' };
   editData: any = { nom: '', roleId: 0, actif: true };
 
   constructor(
     private userService: UserService,
     private roleService: RoleService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.loadUsers();
-    this.roleService.getAll().subscribe(r => {
-      this.roles = r.filter(role =>
-        role.nom !== 'SUPER_ADMIN' && role.nom !== 'USER'
-      );
+    this.roleService.getAll().subscribe({
+      next: (r) => {
+        this.roles = r.filter(role =>
+          role.nom !== 'SUPER_ADMIN' && role.nom !== 'USER'
+        );
+        this.cdr.detectChanges();
+      }
     });
   }
 
   loadUsers(): void {
     const company = this.authService.getCompany();
     this.userService.getByCompany(company).subscribe({
-      next: (u) => this.users = u,
+      next: (u) => {
+        this.users = u;
+        this.cdr.detectChanges();
+      },
       error: () => console.log('Error loading users')
     });
   }
@@ -78,7 +84,9 @@ export class Users implements OnInit {
             nom: newUser.nom,
             roleId: parseInt(this.inviteData.roleId),
             actif: true
-          }).subscribe(() => this.loadUsers());
+          }).subscribe(() => {
+            this.loadUsers();
+          });
         } else {
           this.loadUsers();
         }

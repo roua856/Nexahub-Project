@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../../components/sidebar/sidebar';
@@ -18,19 +18,27 @@ export class Profile implements OnInit {
   message = '';
   error = '';
   loading = false;
-
   passwordData = {
     ancienMotDePasse: '',
     nouveauMotDePasse: '',
     confirm: ''
   };
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.userService.getMe().subscribe({
-      next: (u) => this.user = u,
-      error: () => console.log('Error loading profile')
+      next: (u) => {
+        this.user = u;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.error = 'Could not load profile. Please logout and login again.';
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -66,10 +74,12 @@ export class Profile implements OnInit {
           nouveauMotDePasse: '',
           confirm: ''
         };
+        this.cdr.detectChanges();
       },
       error: () => {
         this.error = 'Current password is incorrect';
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }
