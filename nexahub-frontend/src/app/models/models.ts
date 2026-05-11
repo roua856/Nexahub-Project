@@ -49,3 +49,13 @@ export interface HistoriqueAction {
   company: string;
   dateAction: string;
 }
+export interface Task {
+  id: number;
+  title: string;
+  description: string;
+  status: string;
+  priority: string;
+  dueDate: string;
+  assignedTo: Utilisateur;
+  createdBy: Utilisateur;
+}
