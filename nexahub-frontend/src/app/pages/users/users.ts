@@ -24,7 +24,9 @@ export class Users implements OnInit {
   inviteLoading = false;
   inviteError = '';
   inviteData = { nom: '', email: '', motDePasse: '', roleId: '' };
-  editData: any = { nom: '', roleId: 0, actif: true };
+  editData: any = { nom: '', roleId: 0 };
+  selectedTab: string = 'ALL';
+  searchText: string = '';
 
   constructor(
     private userService: UserService,
@@ -102,11 +104,10 @@ export class Users implements OnInit {
 
   openEdit(user: Utilisateur): void {
     this.selectedUser = user;
-    this.editData = {
+   this.editData = {
       nom: user.nom,
-      roleId: user.role?.id || 0,
-      actif: user.actif
-    };
+      roleId: user.role?.id || 0
+   };
     this.showEditModal = true;
   }
 
@@ -123,11 +124,13 @@ export class Users implements OnInit {
     });
   }
 
-  deleteUser(id: number): void {
-    if (confirm('Are you sure you want to delete this user?')) {
-      this.userService.delete(id).subscribe(() => this.loadUsers());
+ deleteUser(id: number): void {
+    if (confirm('Block this user?')) {
+      this.userService.update(id, { actif: false }).subscribe(() => {
+        this.loadUsers();
+      });
     }
-  }
+ }
 
   getRoleBadge(role: any): string {
     if (!role) return 'badge-role badge-user';
@@ -136,4 +139,19 @@ export class Users implements OnInit {
     if (n === 'MANAGER') return 'badge-role badge-manager';
     return 'badge-role badge-user';
   }
+  getFilteredUsers() {
+  return this.users.filter(user => {
+
+    const matchTab =
+      this.selectedTab === 'ALL' ||
+      (this.selectedTab === 'ACTIVE' && user.actif) ||
+      (this.selectedTab === 'BLOCKED' && !user.actif);
+
+    const matchSearch =
+      user.nom.toLowerCase().includes(this.searchText.toLowerCase()) ||
+      user.email.toLowerCase().includes(this.searchText.toLowerCase());
+
+    return matchTab && matchSearch;
+  });
+}
 }

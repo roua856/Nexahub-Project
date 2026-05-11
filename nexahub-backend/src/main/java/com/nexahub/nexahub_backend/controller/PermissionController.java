@@ -27,13 +27,13 @@ public class PermissionController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Permission> create(@RequestBody Permission permission) {
         return ResponseEntity.ok(permissionService.create(permission));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         permissionService.delete(id);
         return ResponseEntity.noContent().build();

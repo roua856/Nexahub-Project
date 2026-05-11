@@ -28,13 +28,13 @@ public class UtilisateurController {
     private UtilisateurService utilisateurService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<List<Utilisateur>> getAll() {
         return ResponseEntity.ok(utilisateurService.getAll());
     }
 
     @GetMapping("/company/{company}")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<List<Utilisateur>> getByCompany(@PathVariable String company) {
         return ResponseEntity.ok(utilisateurService.getByCompany(company));
     }
@@ -47,7 +47,7 @@ public class UtilisateurController {
     }
 
     @PostMapping("/invite")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Utilisateur> inviteUser(
             @RequestBody RegisterRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
@@ -59,7 +59,7 @@ public class UtilisateurController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Utilisateur> update(
             @PathVariable Long id,
             @RequestBody UserUpdateRequest request,
@@ -71,7 +71,7 @@ public class UtilisateurController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> delete(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails) {

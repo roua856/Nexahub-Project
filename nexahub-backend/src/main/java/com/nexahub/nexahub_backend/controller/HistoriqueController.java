@@ -19,13 +19,13 @@ public class HistoriqueController {
     private HistoriqueService historiqueService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<List<HistoriqueAction>> getAll() {
         return ResponseEntity.ok(historiqueService.getAll());
     }
 
     @GetMapping("/company/{company}")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<List<HistoriqueAction>> getByCompany(
             @PathVariable String company) {
         return ResponseEntity.ok(historiqueService.getByCompany(company));

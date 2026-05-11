@@ -102,9 +102,18 @@ public class UtilisateurService {
     }
 
     public void delete(Long id, Utilisateur currentUser) {
+
         Utilisateur user = getById(id);
-        historiqueService.logAction(currentUser, "DELETE",
-                "Deleted user: " + user.getEmail());
-        utilisateurRepository.deleteById(id);
+
+        // block user instead of deleting
+        user.setActif(false);
+
+        utilisateurRepository.save(user);
+
+        historiqueService.logAction(
+            currentUser,
+            "BLOCK",
+            "Blocked user: " + user.getEmail()
+        );
     }
 }

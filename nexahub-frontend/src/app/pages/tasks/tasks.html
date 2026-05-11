@@ -5,35 +5,195 @@
   <div class="main-content">
 
     <div class="page-header">
-      <h2>
-        📋 Tasks
-      </h2>
 
-      <p>
-        Manage and track workspace tasks
-      </p>
-    </div>
+      <div>
+        <h2 *ngIf="authService.getRole() !== 'EMPLOYEE'">
+         📋 Admin Tasks Workspace
+        </h2>
 
-    <div class="coming-card">
-
-      <div class="coming-icon">
-        🚀
+        <h2 *ngIf="authService.getRole() === 'EMPLOYEE'">
+         📌 My Tasks
+        </h2>
       </div>
 
-      <h3>
-        Tasks system coming soon
-      </h3>
+    </div>
 
-      <p>
-        Soon you will be able to:
-      </p>
+    <!-- CREATE TASK -->
 
-      <ul>
-        <li>Create tasks</li>
-        <li>Assign employees</li>
-        <li>Track progress</li>
-        <li>Manage deadlines</li>
-      </ul>
+    <div
+      *ngIf="authService.getRole() !== 'EMPLOYEE'"
+      class="create-task-card"
+    >
+
+      <h4>Create New Task</h4>
+
+      <div class="form-grid">
+
+        <input
+          type="text"
+          placeholder="Task title"
+          [(ngModel)]="newTask.title"
+        >
+
+        <select [(ngModel)]="newTask.assignedTo">
+
+          <option [ngValue]="null">
+            Assign employee
+          </option>
+
+          <option
+            *ngFor="let user of users"
+            [ngValue]="user"
+          >
+            {{ user.nom }}
+          </option>
+
+        </select>
+
+        <select [(ngModel)]="newTask.priority">
+
+          <option value="LOW">
+            LOW
+          </option>
+
+          <option value="MEDIUM">
+            MEDIUM
+          </option>
+
+          <option value="HIGH">
+            HIGH
+          </option>
+
+        </select>
+
+        <input
+          type="date"
+          [(ngModel)]="newTask.dueDate"
+        >
+
+      </div>
+
+      <textarea
+        rows="4"
+        placeholder="Task description"
+        [(ngModel)]="newTask.description"
+      ></textarea>
+
+      <button
+        class="create-btn"
+        (click)="createTask()"
+      >
+        {{ loading ? 'Creating...' : 'Create Task' }}
+      </button>
+
+    </div>
+
+    <!-- TASKS -->
+
+    <div class="tasks-grid">
+
+      <div
+        class="task-card"
+        *ngFor="let task of tasks"
+      >
+
+        <div class="task-top">
+
+          <h4>
+            {{ task.title }}
+          </h4>
+
+          <span [class]="getPriorityClass(task.priority)">
+            {{ task.priority }}
+          </span>
+
+        </div>
+
+        <p class="description">
+          {{ task.description || 'No description' }}
+        </p>
+
+        <div class="task-info">
+
+          <div>
+            👤 {{ task.assignedTo?.nom }}
+          </div>
+
+          <div>
+            📅 {{ task.dueDate | date:'dd/MM/yyyy' }}
+          </div>
+
+        </div>
+
+        <div class="task-bottom">
+
+          <span [class]="getStatusClass(task.status)">
+            {{ task.status }}
+          </span>
+
+         <div class="actions">
+
+            <!-- TODO → START -->
+
+            <button
+                *ngIf="task.status === 'TODO'"
+                class="progress-btn"
+                (click)="updateStatus(task.id, 'IN_PROGRESS')"
+            >
+                Start
+            </button>
+
+            <!-- IN PROGRESS → COMPLETE -->
+
+            <button
+                *ngIf="task.status === 'IN_PROGRESS'"
+                class="done-btn"
+                (click)="updateStatus(task.id, 'DONE')"
+            >
+                Complete
+            </button>
+
+            <!-- DONE -->
+
+            <span
+                *ngIf="task.status === 'DONE'"
+                class="completed-label"
+            >
+                ✅ Completed
+            </span>
+
+            <!-- ADMIN ONLY -->
+
+            <button
+                *ngIf="authService.getRole() !== 'EMPLOYEE'"
+                class="delete-btn"
+                (click)="deleteTask(task.id)"
+            >
+                Delete
+            </button>
+
+            </div>
+
+        </div>
+
+      </div>
+
+      <div
+        *ngIf="tasks.length === 0"
+        class="empty-state"
+      >
+
+        <div class="empty-icon">
+          📭
+        </div>
+
+        <h3>No tasks found</h3>
+
+        <p>
+          Create your first workspace task
+        </p>
+
+      </div>
 
     </div>
 

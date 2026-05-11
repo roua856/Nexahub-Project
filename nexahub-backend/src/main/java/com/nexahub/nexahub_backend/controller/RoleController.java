@@ -28,13 +28,13 @@ public class RoleController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Role> create(@RequestBody Role role) {
         return ResponseEntity.ok(roleService.create(role));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Role> update(
             @PathVariable Long id,
             @RequestBody Role role) {
@@ -42,7 +42,7 @@ public class RoleController {
     }
 
     @PutMapping("/{id}/permissions")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Role> assignPermissions(
             @PathVariable Long id,
             @RequestBody List<Long> permissionIds) {
@@ -50,7 +50,7 @@ public class RoleController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         roleService.delete(id);
         return ResponseEntity.noContent().build();

@@ -33,7 +33,7 @@ public class TaskController {
     private UtilisateurService utilisateurService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<List<Task>> getAll() {
         return ResponseEntity.ok(taskService.getAll());
     }
@@ -48,9 +48,10 @@ public class TaskController {
         return ResponseEntity.ok(
                 taskService.getByAssignedTo(currentUser));
     }
+    
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<Task> create(
             @RequestBody Task task,
             @AuthenticationPrincipal UserDetails userDetails) {
@@ -73,13 +74,13 @@ public class TaskController {
 
         return ResponseEntity.ok(
                 taskService.updateStatus(
-                        id,
+                         id,
                         body.get("status"),
                         currentUser));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<Void> delete(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails) {
