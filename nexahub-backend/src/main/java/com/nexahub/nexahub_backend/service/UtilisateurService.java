@@ -1,9 +1,11 @@
 package com.nexahub.nexahub_backend.service;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import com.nexahub.nexahub_backend.dto.ChangePasswordRequest;
 import com.nexahub.nexahub_backend.dto.RegisterRequest;
 import com.nexahub.nexahub_backend.dto.UserUpdateRequest;
@@ -35,6 +37,14 @@ public class UtilisateurService {
         return utilisateurRepository.findByCompany(company);
     }
 
+    public long countActiveUsers() {
+        return utilisateurRepository.countByActif(true);
+    }
+
+    public long countBlockedUsers() {
+        return utilisateurRepository.countByActif(false);
+    }
+
     public Utilisateur getById(Long id) {
         return utilisateurRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -46,62 +56,113 @@ public class UtilisateurService {
     }
 
     public Utilisateur inviteUser(RegisterRequest request, Utilisateur currentUser) {
+
         if (utilisateurRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
+
         Role defaultRole = roleRepository.findByNom("USER")
                 .orElseGet(() -> {
+
                     Role r = new Role();
+
                     r.setNom("USER");
                     r.setDescription("Default role");
+
                     return roleRepository.save(r);
                 });
+
         Utilisateur user = new Utilisateur();
+
         user.setNom(request.getNom());
         user.setEmail(request.getEmail());
-        user.setMotDePasse(passwordEncoder.encode(request.getMotDePasse()));
+
+        user.setMotDePasse(
+                passwordEncoder.encode(request.getMotDePasse()));
+
         user.setCompany(currentUser.getCompany());
+
         user.setRole(defaultRole);
+
         user.setActif(true);
+
         utilisateurRepository.save(user);
-        historiqueService.logAction(currentUser, "CREATE",
+
+        historiqueService.logAction(
+                currentUser,
+                "CREATE",
                 "Invited user: " + request.getEmail());
+
         return user;
     }
 
-    public Utilisateur update(Long id, UserUpdateRequest request, Utilisateur currentUser) {
+    public Utilisateur update(
+            Long id,
+            UserUpdateRequest request,
+            Utilisateur currentUser) {
+
         Utilisateur user = getById(id);
+
         if (request.getNom() != null) {
             user.setNom(request.getNom());
         }
+
         if (request.getRoleId() != null) {
+
             Role role = roleRepository.findById(request.getRoleId())
                     .orElseThrow(() -> new RuntimeException("Role not found"));
+
             user.setRole(role);
-            historiqueService.logAction(currentUser, "ROLE_CHANGE",
-                    "Changed role of " + user.getEmail() + " to " + role.getNom());
+
+            historiqueService.logAction(
+                    currentUser,
+                    "ROLE_CHANGE",
+                    "Changed role of " + user.getEmail()
+                            + " to " + role.getNom());
         }
+
         user.setActif(request.isActif());
+
         if (!request.isActif()) {
-            historiqueService.logAction(currentUser, "BLOCK",
+
+            historiqueService.logAction(
+                    currentUser,
+                    "BLOCK",
                     "Blocked user: " + user.getEmail());
         }
+
         return utilisateurRepository.save(user);
     }
 
-    public void changePassword(String email, ChangePasswordRequest request) {
+    public void changePassword(
+            String email,
+            ChangePasswordRequest request) {
+
         Utilisateur user = getByEmail(email);
+
         if (!passwordEncoder.matches(
-                request.getAncienMotDePasse(), user.getMotDePasse())) {
-            throw new RuntimeException("Current password is incorrect");
+                request.getAncienMotDePasse(),
+                user.getMotDePasse())) {
+
+            throw new RuntimeException(
+                    "Current password is incorrect");
         }
+
         user.setMotDePasse(
-                passwordEncoder.encode(request.getNouveauMotDePasse()));
+                passwordEncoder.encode(
+                        request.getNouveauMotDePasse()));
+
         utilisateurRepository.save(user);
-        historiqueService.logAction(user, "PASSWORD_CHANGE", "Password changed");
+
+        historiqueService.logAction(
+                user,
+                "PASSWORD_CHANGE",
+                "Password changed");
     }
 
-    public void delete(Long id, Utilisateur currentUser) {
+    public void delete(
+            Long id,
+            Utilisateur currentUser) {
 
         Utilisateur user = getById(id);
 
@@ -111,9 +172,9 @@ public class UtilisateurService {
         utilisateurRepository.save(user);
 
         historiqueService.logAction(
-            currentUser,
-            "BLOCK",
-            "Blocked user: " + user.getEmail()
+                currentUser,
+                "BLOCK",
+                "Blocked user: " + user.getEmail()
         );
     }
 }

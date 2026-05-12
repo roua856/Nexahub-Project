@@ -7,13 +7,19 @@
     <div class="page-header">
 
       <div>
+
         <h2 *ngIf="authService.getRole() !== 'EMPLOYEE'">
-         📋 Admin Tasks Workspace
+          📋 Admin Tasks Workspace
         </h2>
 
         <h2 *ngIf="authService.getRole() === 'EMPLOYEE'">
-         📌 My Tasks
+          📌 My Tasks
         </h2>
+
+        <p>
+          Manage and track workspace tasks
+        </p>
+
       </div>
 
     </div>
@@ -88,112 +94,239 @@
 
     </div>
 
-    <!-- TASKS -->
+    <!-- BOARD -->
 
-    <div class="tasks-grid">
+    <div class="board">
 
-      <div
-        class="task-card"
-        *ngFor="let task of tasks"
-      >
+      <!-- TODO -->
 
-        <div class="task-top">
+      <div class="column">
 
-          <h4>
-            {{ task.title }}
-          </h4>
+        <h3 class="todo-title">
+          📝 TODO
+        </h3>
 
-          <span [class]="getPriorityClass(task.priority)">
-            {{ task.priority }}
-          </span>
+        <div
+          class="task-card"
+          *ngFor="let task of tasks.filter(t => t.status === 'TODO')"
+        >
 
-        </div>
+          <div class="task-top">
 
-        <p class="description">
-          {{ task.description || 'No description' }}
-        </p>
+            <h4>
+              {{ task.title }}
+            </h4>
 
-        <div class="task-info">
-
-          <div>
-            👤 {{ task.assignedTo?.nom }}
-          </div>
-
-          <div>
-            📅 {{ task.dueDate | date:'dd/MM/yyyy' }}
-          </div>
-
-        </div>
-
-        <div class="task-bottom">
-
-          <span [class]="getStatusClass(task.status)">
-            {{ task.status }}
-          </span>
-
-         <div class="actions">
-
-            <!-- TODO → START -->
-
-            <button
-                *ngIf="task.status === 'TODO'"
-                class="progress-btn"
-                (click)="updateStatus(task.id, 'IN_PROGRESS')"
-            >
-                Start
-            </button>
-
-            <!-- IN PROGRESS → COMPLETE -->
-
-            <button
-                *ngIf="task.status === 'IN_PROGRESS'"
-                class="done-btn"
-                (click)="updateStatus(task.id, 'DONE')"
-            >
-                Complete
-            </button>
-
-            <!-- DONE -->
-
-            <span
-                *ngIf="task.status === 'DONE'"
-                class="completed-label"
-            >
-                ✅ Completed
+            <span [class]="getPriorityClass(task.priority)">
+              {{ task.priority }}
             </span>
 
-            <!-- ADMIN ONLY -->
+          </div>
 
-            <button
-                *ngIf="authService.getRole() !== 'EMPLOYEE'"
-                class="delete-btn"
-                (click)="deleteTask(task.id)"
-            >
-                Delete
-            </button>
+          <p class="description">
+            {{ task.description || 'No description' }}
+          </p>
+
+          <div class="task-info">
+
+            <div>
+              👤 {{ task.assignedTo?.nom }}
+            </div>
+
+            <div>
+              📅 {{ task.dueDate | date:'dd/MM/yyyy' }}
+            </div>
+
+          </div>
+
+          <div class="task-bottom">
+
+            <span [class]="getStatusClass(task.status)">
+              {{ task.status }}
+            </span>
+
+            <div class="actions">
+
+                <button
+                    *ngIf="authService.getRole() === 'EMPLOYEE'"
+                    class="progress-btn"
+                    (click)="updateStatus(task.id, 'IN_PROGRESS')"
+                >
+                    Start
+                </button>
+
+                <button
+                    *ngIf="authService.getRole() !== 'EMPLOYEE'"
+                    class="delete-btn"
+                    (click)="deleteTask(task.id)"
+                >
+                    Delete
+                </button>
 
             </div>
 
+          </div>
+
         </div>
 
       </div>
 
-      <div
-        *ngIf="tasks.length === 0"
-        class="empty-state"
-      >
+      <!-- IN PROGRESS -->
 
-        <div class="empty-icon">
-          📭
+      <div class="column">
+
+        <h3 class="progress-title">
+          🚀 IN PROGRESS
+        </h3>
+
+        <div
+          class="task-card"
+          *ngFor="let task of tasks.filter(t => t.status === 'IN_PROGRESS')"
+        >
+
+          <div class="task-top">
+
+            <h4>
+              {{ task.title }}
+            </h4>
+
+            <span [class]="getPriorityClass(task.priority)">
+              {{ task.priority }}
+            </span>
+
+          </div>
+
+          <p class="description">
+            {{ task.description || 'No description' }}
+          </p>
+
+          <div class="task-info">
+
+            <div>
+              👤 {{ task.assignedTo?.nom }}
+            </div>
+
+            <div>
+              📅 {{ task.dueDate | date:'dd/MM/yyyy' }}
+            </div>
+
+          </div>
+
+          <div class="task-bottom">
+
+                <span [class]="getStatusClass(task.status)">
+                {{ task.status }}
+                </span>
+
+                <div class="actions">
+
+                    <button
+                        *ngIf="authService.getRole() === 'EMPLOYEE'"
+                        class="done-btn"
+                        (click)="updateStatus(task.id, 'DONE')"
+                    >
+                        Complete
+                    </button>
+
+                    <button
+                        *ngIf="authService.getRole() !== 'EMPLOYEE'"
+                        class="delete-btn"
+                        (click)="deleteTask(task.id)"
+                    >
+                        Delete
+                    </button>
+
+                </div>
+
+          </div>
+
         </div>
 
-        <h3>No tasks found</h3>
+      </div>
 
-        <p>
-          Create your first workspace task
-        </p>
+      <!-- DONE -->
+
+      <div class="column">
+
+        <h3 class="done-title">
+          ✅ DONE
+        </h3>
+
+        <div
+          class="task-card"
+          *ngFor="let task of tasks.filter(t => t.status === 'DONE')"
+        >
+
+          <div class="task-top">
+
+            <h4>
+              {{ task.title }}
+            </h4>
+
+            <span [class]="getPriorityClass(task.priority)">
+              {{ task.priority }}
+            </span>
+
+          </div>
+
+          <p class="description">
+            {{ task.description || 'No description' }}
+          </p>
+
+          <div class="task-info">
+
+            <div>
+              👤 {{ task.assignedTo?.nom }}
+            </div>
+
+            <div>
+              📅 {{ task.dueDate | date:'dd/MM/yyyy' }}
+            </div>
+
+          </div>
+
+          <div class="task-bottom">
+
+            <span [class]="getStatusClass(task.status)">
+              {{ task.status }}
+            </span>
+
+            <div class="actions">
+
+              <button
+                *ngIf="authService.getRole() !== 'EMPLOYEE'"
+                class="delete-btn"
+                (click)="deleteTask(task.id)"
+              >
+                Delete
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
 
       </div>
+
+    </div>
+
+    <!-- EMPTY -->
+
+    <div
+      *ngIf="tasks.length === 0"
+      class="empty-state"
+    >
+
+      <div class="empty-icon">
+        📭
+      </div>
+
+      <h3>No tasks found</h3>
+
+      <p>
+        Create your first workspace task
+      </p>
 
     </div>
 

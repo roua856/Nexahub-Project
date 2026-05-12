@@ -173,4 +173,22 @@ export class Tasks implements OnInit {
         return 'badge bg-info text-dark';
     }
   }
+  getTodoTasks() {
+    return this.tasks.filter(
+        task => task.status === 'TODO'
+    );
+    }
+
+ getInProgressTasks() {
+    return this.tasks.filter(
+        task => task.status === 'IN_PROGRESS'
+    );
+    }
+
+ getDoneTasks() {
+    return this.tasks.filter(
+        task => task.status === 'DONE'
+    );
+    }
+
 }

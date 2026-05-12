@@ -60,19 +60,26 @@
             </td>
            <td>
 
-              <button class="btn-edit me-2" (click)="openEdit(user)">
+              <button
+                class="edit-btn"
+                (click)="openEditModal(user)"
+              >
                 Edit
               </button>
 
-              <button *ngIf="user.actif"
-                      class="btn-danger"
-                      (click)="deleteUser(user.id)">
+              <button
+                *ngIf="user.actif"
+                class="block-btn"
+                (click)="blockUser(user.id)"
+              >
                 Block
               </button>
 
-              <button *ngIf="!user.actif"
-                      class="btn-edit"
-                      (click)="openEdit(user)">
+              <button
+                *ngIf="!user.actif"
+                class="activate-btn"
+                (click)="activateUser(user.id)"
+              >
                 Activate
               </button>
 

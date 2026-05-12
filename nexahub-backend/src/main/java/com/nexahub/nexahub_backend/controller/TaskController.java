@@ -33,9 +33,15 @@ public class TaskController {
     private UtilisateurService utilisateurService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
-    public ResponseEntity<List<Task>> getAll() {
-        return ResponseEntity.ok(taskService.getAll());
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','EMPLOYEE')")
+    public ResponseEntity<List<Task>> getAll(
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        Utilisateur currentUser =
+                utilisateurService.getByEmail(userDetails.getUsername());
+
+        return ResponseEntity.ok(
+                taskService.getTasksForUser(currentUser));
     }
 
     @GetMapping("/my")

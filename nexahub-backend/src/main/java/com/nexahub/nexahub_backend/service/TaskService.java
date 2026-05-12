@@ -77,4 +77,14 @@ public class TaskService {
 
         taskRepository.deleteById(id);
     }
+    public List<Task> getTasksForUser(Utilisateur currentUser) {
+
+        String role = currentUser.getRole().getNom();
+
+        if (role.equals("EMPLOYEE")) {
+            return taskRepository.findByAssignedTo(currentUser);
+        }
+
+        return taskRepository.findAll();
+    }
 }
