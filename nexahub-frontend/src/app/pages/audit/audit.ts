@@ -74,4 +74,25 @@ export class Audit implements OnInit {
     link.download = 'audit-log.csv';
     link.click();
   }
+  searchText = '';
+
+  onSearch(event: any): void {
+    this.searchText = event.target.value.toLowerCase();
+
+    this.filtered = this.actions.filter(a =>
+      (a.utilisateur?.nom || '').toLowerCase().includes(this.searchText) &&
+      (this.selectedFilter === 'ALL' || a.action === this.selectedFilter)
+    );
+  }
+  getIcon(action: string): string {
+  switch (action) {
+    case 'LOGIN': return '🔐';
+    case 'CREATE': return '➕';
+    case 'DELETE': return '❌';
+    case 'BLOCK': return '🚫';
+    case 'ROLE_CHANGE': return '🔁';
+    case 'PASSWORD_CHANGE': return '🔑';
+    default: return '•';
+  }
+ }
 }

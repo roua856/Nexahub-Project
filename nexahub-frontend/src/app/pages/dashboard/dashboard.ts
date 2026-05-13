@@ -17,6 +17,7 @@ export class Dashboard implements OnInit {
 
   user: any;
   totalUsers = 0;
+  activeUsers = 0;
   totalRoles = 0;
   blockedUsers = 0;
   actionsToday = 0;
@@ -43,6 +44,7 @@ export class Dashboard implements OnInit {
       next: (users) => {
         this.totalUsers = users.length;
         this.blockedUsers = users.filter(u => !u.actif).length;
+        this.activeUsers = users.filter(u => u.actif).length;
         this.cdr.detectChanges();
       }
     });

@@ -37,6 +37,10 @@ public class UtilisateurService {
         return utilisateurRepository.findByCompany(company);
     }
 
+    public long countTotalUsers() {
+        return utilisateurRepository.count();
+    }
+
     public long countActiveUsers() {
         return utilisateurRepository.countByActif(true);
     }
@@ -55,7 +59,9 @@ public class UtilisateurService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public Utilisateur inviteUser(RegisterRequest request, Utilisateur currentUser) {
+    public Utilisateur inviteUser(
+            RegisterRequest request,
+            Utilisateur currentUser) {
 
         if (utilisateurRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already exists");

@@ -1,189 +1,479 @@
-<div style="display:flex">
+<div class="users-page">
+
   <app-sidebar></app-sidebar>
+
   <div class="main-content">
 
-    <div class="page-header">
-      <h2>Manage users</h2>
-      <button class="btn-primary"
-              style="width:auto; padding:9px 18px;"
-              (click)="openInvite()">
-        + Invite user
+    <!-- HEADER -->
+
+    <div class="top-header">
+
+      <div class="header-left">
+
+        <div class="header-icon">
+          👥
+        </div>
+
+        <div>
+
+          <h1>User Management</h1>
+
+
+
+        </div>
+
+      </div>
+
+      <button
+        class="invite-btn"
+        (click)="openInvite()">
+
+        <span>➕</span>
+        Invite User
+
       </button>
+
     </div>
+
+    <!-- CARD -->
 
     <div class="card-box">
-      <div style="display:flex; gap:10px; margin-bottom:10px;">
-       <button (click)="selectedTab='ALL'">All</button>
-       <button (click)="selectedTab='ACTIVE'">Active</button>
-       <button (click)="selectedTab='BLOCKED'">Blocked</button>
+
+      <!-- TOOLBAR -->
+
+      <div class="users-toolbar">
+
+        <!-- FILTERS -->
+
+        <div class="filter-tabs">
+
+          <button
+            [class.active-tab]="selectedTab === 'ALL'"
+            (click)="selectedTab='ALL'">
+
+            <span class="dot blue"></span>
+            All Users
+
+          </button>
+
+          <button
+            [class.active-tab]="selectedTab === 'ACTIVE'"
+            (click)="selectedTab='ACTIVE'">
+
+            <span class="dot green"></span>
+            Active
+
+          </button>
+
+          <button
+            [class.active-tab]="selectedTab === 'BLOCKED'"
+            (click)="selectedTab='BLOCKED'">
+
+            <span class="dot red"></span>
+            Blocked
+
+          </button>
+
+        </div>
+
+        <!-- SEARCH -->
+
+        <div class="search-container">
+
+          <span class="search-icon">
+            🔍
+          </span>
+
+          <input
+            type="text"
+            placeholder="Search users by name or email..."
+            [(ngModel)]="searchText"
+            class="search-input">
+
+        </div>
+
       </div>
-      <input type="text"
-              placeholder="Search users..."
-              [(ngModel)]="searchText"
-              class="form-control"
-              style="margin-bottom:10px;">
+
+      <!-- TABLE -->
+
       <table>
+
         <thead>
+
           <tr>
-            <th>Name / Email</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th>Actions</th>
+
+            <th>USER</th>
+            <th>ROLE</th>
+            <th>STATUS</th>
+            <th>ACTIONS</th>
+
           </tr>
+
         </thead>
+
         <tbody>
+
           <tr *ngFor="let user of getFilteredUsers()">
+
+            <!-- USER -->
+
             <td>
-              <div style="display:flex; align-items:center; gap:10px;">
-                <div class="avatar">
-                  {{ user.nom?.charAt(0)?.toUpperCase() }}
-                </div>
+
+              <div class="user-info">
+              <div
+                class="avatar"
+                [ngStyle]="{
+                  'background': getAvatarColor(user.nom).background,
+                  'color': getAvatarColor(user.nom).color
+                }">
+
+                {{ user.nom?.charAt(0)?.toUpperCase() }}
+
+              </div>
+
                 <div>
-                  <div style="font-weight:500;">{{ user.nom }}</div>
-                  <div style="font-size:12px; color:#636e72;">
+
+                  <div class="user-name">
+                    {{ user.nom }}
+                  </div>
+
+                  <div class="user-email">
                     {{ user.email }}
                   </div>
+
                 </div>
+
               </div>
+
             </td>
+
+            <!-- ROLE -->
+
             <td>
+
               <span [class]="getRoleBadge(user.role)">
-                {{ user.role?.nom || 'No role' }}
+
+                <span *ngIf="user.role?.nom === 'ADMIN'">
+                  🛡️
+                </span>
+
+                <span *ngIf="user.role?.nom === 'MANAGER'">
+                  👑
+                </span>
+
+                <span *ngIf="user.role?.nom === 'EMPLOYEE'">
+                  👤
+                </span>
+
+                {{ user.role?.nom }}
+
               </span>
+
             </td>
+
+            <!-- STATUS -->
+
             <td>
-              <span [class]="user.actif ?
-                'badge-role badge-active' :
-                'badge-role badge-blocked'">
+
+              <span
+                [class]="user.actif
+                ? 'badge-role badge-active'
+                : 'badge-role badge-blocked'">
+
+                <span class="status-dot"></span>
+
                 {{ user.actif ? 'Active' : 'Blocked' }}
+
               </span>
-            </td>
-           <td>
-
-              <button
-                class="edit-btn"
-                (click)="openEditModal(user)"
-              >
-                Edit
-              </button>
-
-              <button
-                *ngIf="user.actif"
-                class="block-btn"
-                (click)="blockUser(user.id)"
-              >
-                Block
-              </button>
-
-              <button
-                *ngIf="!user.actif"
-                class="activate-btn"
-                (click)="activateUser(user.id)"
-              >
-                Activate
-              </button>
 
             </td>
+
+            <!-- ACTIONS -->
+              <td>
+
+                <div class="action-buttons">
+
+                  <button
+                    class="btn-action btn-edit-modern"
+                    (click)="openEditModal(user)">
+
+                    <span class="btn-icon">✎</span>
+
+                    Edit
+
+                  </button>
+
+                  <button
+                    *ngIf="user.actif"
+                    class="btn-action btn-block-modern"
+                    (click)="blockUser(user.id)">
+
+                    <span class="btn-icon">⊘</span>
+
+                    Block
+
+                  </button>
+
+                  <button
+                    *ngIf="!user.actif"
+                    class="btn-action btn-activate-modern"
+                    (click)="activateUser(user.id)">
+
+                    <span class="btn-icon">✓</span>
+
+                    Activate
+
+                  </button>
+
+                </div>
+
+              </td>
           </tr>
+
+          <!-- EMPTY -->
+
           <tr *ngIf="users.length === 0">
-            <td colspan="4"
-                style="text-align:center; color:#636e72; padding:30px;">
-              No users yet. Click "+ Invite user" to add your first user!
+
+            <td colspan="4" class="empty-state">
+
+              No users found
+
             </td>
+
           </tr>
+
         </tbody>
+
       </table>
-    </div>
+
+      <!-- FOOTER -->
+
+      <div class="table-footer">
+
+        <div>
+
+          Showing
+          {{ getFilteredUsers().length }}
+          users
+
+        </div>
+
+              <div class="pagination">
+
+                <button
+                  (click)="previousPage()"
+                  [disabled]="currentPage === 1">
+
+                  ←
+
+                </button>
+
+                <button class="active-page">
+
+                  {{ currentPage }}
+
+                </button>
+
+                <button
+                  (click)="nextPage()"
+                  [disabled]="currentPage === getTotalPages()">
+
+                  →
+
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
 
     <!-- INVITE MODAL -->
+
     <div *ngIf="showInviteModal" class="modal-overlay">
+
       <div class="modal-box">
+
         <h5>Invite new user</h5>
-        <p>They will be added to your company workspace</p>
+
+        <p>
+          They will be added to your company workspace
+        </p>
+
         <div *ngIf="inviteError" class="alert-error">
+
           {{ inviteError }}
+
         </div>
+
         <div class="form-group">
+
           <label>Full name</label>
-          <input type="text" class="form-control"
-                 [(ngModel)]="inviteData.nom"
-                 placeholder="e.g. Ahmed Ben Salem">
+
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="inviteData.nom"
+            placeholder="e.g. Ahmed Ben Salem">
+
         </div>
+
         <div class="form-group">
+
           <label>Email address</label>
-          <input type="email" class="form-control"
-                 [(ngModel)]="inviteData.email"
-                 placeholder="ahmed@yourcompany.com">
+
+          <input
+            type="email"
+            class="form-control"
+            [(ngModel)]="inviteData.email"
+            placeholder="ahmed@yourcompany.com">
+
         </div>
+
         <div class="form-group">
+
           <label>Temporary password</label>
-          <input type="password" class="form-control"
-                 [(ngModel)]="inviteData.motDePasse"
-                 placeholder="They can change it later">
+
+          <input
+            type="password"
+            class="form-control"
+            [(ngModel)]="inviteData.motDePasse"
+            placeholder="They can change it later">
+
         </div>
+
         <div class="form-group">
+
           <label>Assign role</label>
-          <select class="form-control" [(ngModel)]="inviteData.roleId">
-            <option value="">Select a role</option>
-            <option *ngFor="let role of roles" [value]="role.id">
-              {{ role.nom }}
+
+          <select
+            class="form-control"
+            [(ngModel)]="inviteData.roleId">
+
+            <option value="">
+              Select a role
             </option>
+
+            <option
+              *ngFor="let role of roles"
+              [value]="role.id">
+
+              {{ role.nom }}
+
+            </option>
+
           </select>
+
         </div>
-        <div style="display:flex; gap:10px;">
-          <button class="btn-primary" style="width:auto; flex:1;"
-                  (click)="inviteUser()" [disabled]="inviteLoading">
+
+        <div class="modal-actions">
+
+          <button
+            class="btn-primary"
+            (click)="inviteUser()"
+            [disabled]="inviteLoading">
+
             {{ inviteLoading ? 'Creating...' : 'Create account' }}
+
           </button>
-          <button class="btn-secondary"
-                  (click)="showInviteModal=false">
+
+          <button
+            class="btn-secondary"
+            (click)="showInviteModal=false">
+
             Cancel
+
           </button>
+
         </div>
+
       </div>
+
     </div>
 
     <!-- EDIT MODAL -->
+
     <div *ngIf="showEditModal" class="modal-overlay">
+
       <div class="modal-box">
-        <div style="display:flex; align-items:center;
-                    gap:12px; margin-bottom:18px;">
-          <div class="avatar" style="width:42px; height:42px; font-size:16px;">
+
+        <div class="modal-user-header">
+
+          <div class="avatar modal-avatar">
+
             {{ selectedUser?.nom?.charAt(0)?.toUpperCase() }}
+
           </div>
+
           <div>
-            <div style="font-weight:600;">{{ selectedUser?.nom }}</div>
-            <div style="font-size:13px; color:#636e72;">
-              {{ selectedUser?.email }}
+
+            <div class="modal-user-name">
+
+              {{ selectedUser?.nom }}
+
             </div>
+
+            <div class="modal-user-email">
+
+              {{ selectedUser?.email }}
+
+            </div>
+
           </div>
+
         </div>
+
         <div class="form-group">
+
           <label>Change role</label>
-          <select class="form-control" [(ngModel)]="editData.roleId">
-            <option *ngFor="let role of roles" [value]="role.id">
+
+          <select
+            class="form-control"
+            [(ngModel)]="editData.roleId">
+
+            <option
+              *ngFor="let role of roles"
+              [value]="role.id">
+
               {{ role.nom }}
+
             </option>
+
           </select>
+
         </div>
-        <div class="form-group">
-          <label>Account status</label>
-  
-        </div>
-        <div style="font-size:12px; color:#636e72; margin-bottom:14px;">
+
+        <div class="modal-note">
+
           Every save is logged in the audit log automatically.
+
         </div>
-        <div style="display:flex; gap:10px;">
-          <button class="btn-primary" style="width:auto; flex:1;"
-                  (click)="saveUser()" [disabled]="loading">
+
+        <div class="modal-actions">
+
+          <button
+            class="btn-primary"
+            (click)="saveUser()"
+            [disabled]="loading">
+
             {{ loading ? 'Saving...' : 'Save changes' }}
+
           </button>
-          <button class="btn-secondary" (click)="showEditModal=false">
+
+          <button
+            class="btn-secondary"
+            (click)="showEditModal=false">
+
             Cancel
+
           </button>
+
         </div>
+
       </div>
+
     </div>
 
   </div>
+
 </div>

@@ -1,7 +1,9 @@
 <div style="display:flex">
   <app-sidebar></app-sidebar>
+
   <div class="main-content">
 
+    <!-- HEADER -->
     <div class="page-header">
       <h2>Audit Log</h2>
       <button class="btn-secondary" (click)="exportCSV()">
@@ -9,19 +11,30 @@
       </button>
     </div>
 
-    <!-- Filters -->
-    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">
-      <button *ngFor="let f of filters"
-              [style.background]="selectedFilter === f ?
-                '#0984e3' : 'white'"
-              [style.color]="selectedFilter === f ? 'white' : '#2d3436'"
-              style="border:1px solid #dfe6e9; border-radius:20px;
-                     padding:5px 14px; font-size:12px; cursor:pointer;"
-              (click)="filterBy(f)">
-        {{ f }}
-      </button>
+    <!-- ✅ ADD HERE -->
+    <div class="toolbar">
+
+      <div class="filters">
+        <button *ngFor="let f of filters"
+                [class.active]="selectedFilter === f"
+                (click)="filterBy(f)">
+          {{ f }}
+        </button>
+      </div>
+
+      <div class="actions">
+        <input type="text"
+               placeholder="Search user..."
+               (input)="onSearch($event)" />
+
+        <button class="btn-export" (click)="exportCSV()">
+          ⬇ Export
+        </button>
+      </div>
+
     </div>
 
+    <!-- ✅ NEW TABLE -->
     <div class="card-box">
       <table>
         <thead>
@@ -33,36 +46,45 @@
             <th>Company</th>
           </tr>
         </thead>
+
         <tbody>
           <tr *ngFor="let action of filtered">
-            <td style="color:#636e72; font-size:12px;">
+
+            <td class="time">
               {{ action.dateAction | date:'dd/MM HH:mm' }}
             </td>
+
             <td>
-              <div style="display:flex; align-items:center; gap:8px;">
-                <div class="avatar"
-                     style="width:26px; height:26px; font-size:11px;">
+              <div class="user-cell">
+                <div class="avatar">
                   {{ action.utilisateur?.nom?.charAt(0)?.toUpperCase() }}
                 </div>
                 {{ action.utilisateur?.nom }}
               </div>
             </td>
+
             <td>
-              <span [class]="getBadgeClass(action.action)">
-                {{ action.action }}
+              <span class="badge" [ngClass]="action.action">
+                {{ getIcon(action.action) }} {{ action.action }}
               </span>
             </td>
-            <td style="color:#636e72; font-size:13px;">
+
+            <td class="details">
               {{ action.details }}
             </td>
-            <td style="font-size:13px;">{{ action.company }}</td>
+
+            <td>
+              {{ action.company }}
+            </td>
+
           </tr>
+
           <tr *ngIf="filtered.length === 0">
-            <td colspan="5"
-                style="text-align:center; color:#636e72; padding:30px;">
+            <td colspan="5" class="empty">
               No actions found
             </td>
           </tr>
+
         </tbody>
       </table>
     </div>

@@ -35,6 +35,7 @@
     <!-- STATS -->
     <div class="stats-grid">
 
+      <!-- TOTAL USERS -->
       <div class="stat-card">
         <div class="stat-icon blue">
           👥
@@ -51,22 +52,24 @@
         </div>
       </div>
 
+      <!-- ACTIVE USERS -->
       <div class="stat-card">
-        <div class="stat-icon purple">
-          🛡️
+        <div class="stat-icon green">
+          ✅
         </div>
 
         <div>
           <div class="stat-number">
-            {{ totalRoles }}
+            {{ activeUsers }}
           </div>
 
           <div class="stat-label">
-            Roles
+            Active Users
           </div>
         </div>
       </div>
 
+      <!-- BLOCKED USERS -->
       <div class="stat-card">
         <div class="stat-icon orange">
           🚫
@@ -83,8 +86,9 @@
         </div>
       </div>
 
+      <!-- ACTIONS -->
       <div class="stat-card">
-        <div class="stat-icon green">
+        <div class="stat-icon purple">
           📜
         </div>
 

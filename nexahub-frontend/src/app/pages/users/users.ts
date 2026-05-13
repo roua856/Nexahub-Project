@@ -33,6 +33,9 @@ export class Users implements OnInit {
 
   selectedTab: string = 'ALL';
   searchText: string = '';
+  currentPage: number = 1;
+
+ itemsPerPage: number = 5;
 
   inviteData = {
     nom: '',
@@ -336,7 +339,7 @@ export class Users implements OnInit {
 
   getFilteredUsers(): Utilisateur[] {
 
-    return this.users.filter(user => {
+    const filtered = this.users.filter(user => {
 
       const matchTab =
 
@@ -357,6 +360,102 @@ export class Users implements OnInit {
       return matchTab && matchSearch;
     });
 
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+
+    const end = start + this.itemsPerPage;
+
+    return filtered.slice(start, end);
+ }
+ getAvatarColor(name: string): any {
+
+  const colors = [
+
+    {
+      background: '#dcfce7',
+      color: '#16a34a'
+    },
+
+    {
+      background: '#dbeafe',
+      color: '#2563eb'
+    },
+
+    {
+      background: '#fce7f3',
+      color: '#db2777'
+    },
+
+    {
+      background: '#fef3c7',
+      color: '#d97706'
+    },
+
+    {
+      background: '#ede9fe',
+      color: '#7c3aed'
+    },
+
+    {
+      background: '#cffafe',
+      color: '#0891b2'
+    }
+
+  ];
+
+  let index = 0;
+
+  for(let i = 0; i < name.length; i++){
+
+    index += name.charCodeAt(i);
+
+  }
+
+  return colors[index % colors.length];
+ }
+  getTotalPages(): number {
+
+    return Math.ceil(
+
+      this.users.filter(user => {
+
+        const matchTab =
+
+          this.selectedTab === 'ALL' ||
+
+          (this.selectedTab === 'ACTIVE' && user.actif) ||
+
+          (this.selectedTab === 'BLOCKED' && !user.actif);
+
+        const matchSearch =
+
+          user.nom.toLowerCase()
+            .includes(this.searchText.toLowerCase()) ||
+
+          user.email.toLowerCase()
+            .includes(this.searchText.toLowerCase());
+
+        return matchTab && matchSearch;
+
+      }).length / this.itemsPerPage
+    );
+  }
+
+  nextPage(): void {
+
+    if(this.currentPage < this.getTotalPages()){
+
+      this.currentPage++;
+
+    }
+  }
+
+  previousPage(): void {
+
+    if(this.currentPage > 1){
+
+      this.currentPage--;
+
+    }
   }
 
 }
