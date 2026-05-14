@@ -22,6 +22,8 @@ export class Tasks implements OnInit {
   tasks: any[] = [];
   users: any[] = [];
 
+  myTasks: any[] = [];
+
   user: any;
 
   loading = false;
@@ -46,9 +48,12 @@ export class Tasks implements OnInit {
 
   ngOnInit(): void {
 
-    if (this.authService.getRole() === 'EMPLOYEE') {
+    if (this.authService.isEmployee()) {
+
       this.loadMyTasks();
+
     } else {
+
       this.loadAllTasks();
       this.loadUsers();
     }
@@ -71,7 +76,9 @@ export class Tasks implements OnInit {
     this.taskService.getMyTasks().subscribe({
       next: (data) => {
 
+        this.myTasks = data;
         this.tasks = data;
+        console.log(this.tasks);
 
         this.cdr.detectChanges();
       }
@@ -123,7 +130,7 @@ export class Tasks implements OnInit {
     this.taskService.updateStatus(taskId, status).subscribe({
       next: () => {
 
-        if (this.authService.getRole() === 'EMPLOYEE') {
+        if (this.authService.isEmployee()) {
           this.loadMyTasks();
         } else {
           this.loadAllTasks();
@@ -132,50 +139,86 @@ export class Tasks implements OnInit {
     });
   }
 
-  deleteTask(id: number): void {
+  setInProgress(taskId: number): void {
+    this.updateStatus(taskId, 'IN_PROGRESS');
+  }
 
-    if (!confirm('Delete this task?')) {
-      return;
+  setDone(taskId: number): void {
+    this.updateStatus(taskId, 'DONE');
+  }
+
+  getStatusClass(status: string): string {
+
+    switch (status) {
+
+      case 'DONE':
+        return 'badge bg-success';
+
+      case 'IN_PROGRESS':
+        return 'badge bg-inprogress';
+
+      default:
+        return 'badge bg-secondary';
+    }
+  }
+
+  getPriorityClass(priority: string): string {
+
+    switch (priority) {
+
+      case 'HIGH':
+        return 'badge bg-high';
+
+      case 'MEDIUM':
+        return 'badge bg-warning';
+
+      case 'LOW':
+        return 'badge bg-low';
+
+      default:
+        return 'badge bg-secondary';
+    }
+  }
+
+  getFilteredTasks() {
+
+    if (this.authService.isEmployee()) {
+
+      return this.tasks.filter(
+        task => task.assignedTo?.id === this.user?.id
+      );
     }
 
-    this.taskService.delete(id).subscribe({
-      next: () => {
-        this.loadAllTasks();
-      }
-    });
+    return this.tasks;
   }
-getStatusClass(status: string): string {
-  switch (status) {
-    case 'DONE':        return 'badge bg-success';
-    case 'IN_PROGRESS': return 'badge bg-inprogress';
-    default:            return 'badge bg-secondary';
-  }
-}
 
-getPriorityClass(priority: string): string {
-  switch (priority) {
-    case 'HIGH':   return 'badge bg-high';
-    case 'MEDIUM': return 'badge bg-warning';
-    case 'LOW':    return 'badge bg-low';
-    default:       return 'badge bg-secondary';
-  }
-}
-  getTodoTasks() {
-    return this.tasks.filter(
-        task => task.status === 'TODO'
-    );
-    }
+ getTodoTasks() {
+
+  return this.tasks.filter(task =>
+
+    task.status === 'TODO' ||
+    task.status === 'TO_DO'
+
+  );
+ }
 
  getInProgressTasks() {
-    return this.tasks.filter(
-        task => task.status === 'IN_PROGRESS'
+
+    return this.tasks.filter(task =>
+
+        task.status === 'IN_PROGRESS' ||
+        task.status === 'INPROGRESS' ||
+        task.status === 'In Progress'
+
     );
-    }
+ }
 
  getDoneTasks() {
-    return this.tasks.filter(
-        task => task.status === 'DONE'
-    );
-    }
 
+    return this.tasks.filter(task =>
+
+        task.status === 'DONE'
+      
+    );
+ }
 }

@@ -47,6 +47,23 @@ export class AuthService {
     return this.getToken() !== null;
   }
 
+  isAdmin(): boolean {
+    return this.getRole() === 'ADMIN'
+        || this.getRole() === 'SUPER_ADMIN';
+  }
+
+  isManager(): boolean {
+    return this.getRole() === 'MANAGER';
+  }
+
+  isAdminOrManager(): boolean {
+    return this.isAdmin() || this.isManager();
+  }
+
+  isEmployee(): boolean {
+    return this.getRole() === 'EMPLOYEE';
+  }
+
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');

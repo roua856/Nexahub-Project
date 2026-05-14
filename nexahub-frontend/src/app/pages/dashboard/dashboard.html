@@ -17,7 +17,7 @@
     </div>
 
     <!-- STATS -->
-    <div class="stats-grid">
+    <div class="stats-grid"*ngIf="authService.isAdminOrManager()">
       <div class="stat-card">
         <div class="stat-icon blue">👥</div>
         <div>
@@ -46,6 +46,66 @@
           <div class="stat-label">Actions Today</div>
         </div>
       </div>
+    </div>
+
+    <div
+      class="employee-stats"
+      *ngIf="authService.isEmployee()">
+
+      <div class="emp-card">
+
+        <div class="emp-icon blue">
+          📋
+        </div>
+
+        <div>
+          <div class="emp-number">
+            {{ myTasks.length }}
+          </div>
+
+          <div class="emp-label">
+            My Tasks
+          </div>
+        </div>
+
+      </div>
+
+      <div class="emp-card">
+
+        <div class="emp-icon green">
+          ✅
+        </div>
+
+        <div>
+          <div class="emp-number">
+            {{ completedTasks }}
+          </div>
+
+          <div class="emp-label">
+            Completed
+          </div>
+        </div>
+
+      </div>
+
+      <div class="emp-card">
+
+        <div class="emp-icon orange">
+          ⏳
+        </div>
+
+        <div>
+          <div class="emp-number">
+            {{ progressTasks }}
+          </div>
+
+          <div class="emp-label">
+            In Progress
+          </div>
+        </div>
+
+      </div>
+
     </div>
 
     <!-- EMPLOYEE WELCOME -->
