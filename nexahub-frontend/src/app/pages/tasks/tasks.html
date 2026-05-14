@@ -4,329 +4,174 @@
 
   <div class="main-content">
 
-    <div class="page-header">
-
+    <!-- HEADER -->
+    <div class="tasks-header">
       <div>
-
-        <h2 *ngIf="authService.getRole() !== 'EMPLOYEE'">
-          📋 Admin Tasks Workspace
-        </h2>
-
-        <h2 *ngIf="authService.getRole() === 'EMPLOYEE'">
-          📌 My Tasks
-        </h2>
-
-        <p>
-          Manage and track workspace tasks
-        </p>
-
+        <h2>Task Management</h2>
+        <p>Organize and track workspace tasks</p>
       </div>
-
+      <button
+        *ngIf="authService.getRole() !== 'EMPLOYEE'"
+        class="new-task-btn"
+        (click)="showForm = !showForm"
+      >
+        + New Task
+      </button>
     </div>
 
-    <!-- CREATE TASK -->
-
+    <!-- CREATE TASK FORM (toggled by button) -->
     <div
-      *ngIf="authService.getRole() !== 'EMPLOYEE'"
+      *ngIf="authService.getRole() !== 'EMPLOYEE' && showForm"
       class="create-task-card"
     >
-
-      <h4>Create New Task</h4>
-
+      <h3>Create New Task</h3>
       <div class="form-grid">
-
-        <input
-          type="text"
-          placeholder="Task title"
-          [(ngModel)]="newTask.title"
-        >
-
+        <input type="text" placeholder="Task title" [(ngModel)]="newTask.title">
         <select [(ngModel)]="newTask.assignedTo">
-
-          <option [ngValue]="null">
-            Assign employee
-          </option>
-
-          <option
-            *ngFor="let user of users"
-            [ngValue]="user"
-          >
-            {{ user.nom }}
-          </option>
-
+          <option [ngValue]="null">Assign employee</option>
+          <option *ngFor="let user of users" [ngValue]="user">{{ user.nom }}</option>
         </select>
-
         <select [(ngModel)]="newTask.priority">
-
-          <option value="LOW">
-            LOW
-          </option>
-
-          <option value="MEDIUM">
-            MEDIUM
-          </option>
-
-          <option value="HIGH">
-            HIGH
-          </option>
-
+          <option value="LOW">LOW</option>
+          <option value="MEDIUM">MEDIUM</option>
+          <option value="HIGH">HIGH</option>
         </select>
-
-        <input
-          type="date"
-          [(ngModel)]="newTask.dueDate"
-        >
-
+        <input type="date" [(ngModel)]="newTask.dueDate">
       </div>
-
-      <textarea
-        rows="4"
-        placeholder="Task description"
-        [(ngModel)]="newTask.description"
-      ></textarea>
-
-      <button
-        class="create-btn"
-        (click)="createTask()"
-      >
+      <textarea rows="3" placeholder="Task description" [(ngModel)]="newTask.description"></textarea>
+      <button class="create-btn" (click)="createTask()">
         {{ loading ? 'Creating...' : 'Create Task' }}
       </button>
-
     </div>
 
-    <!-- BOARD -->
+    <!-- KANBAN COLUMNS -->
+    <div class="kanban-grid">
 
-    <div class="board">
-
-      <!-- TODO -->
-
-      <div class="column">
-
-        <h3 class="todo-title">
-          📝 TODO
-        </h3>
-
-        <div
-          class="task-card"
-          *ngFor="let task of tasks.filter(t => t.status === 'TODO')"
-        >
-
-          <div class="task-top">
-
-            <h4>
-              {{ task.title }}
-            </h4>
-
-            <span [class]="getPriorityClass(task.priority)">
-              {{ task.priority }}
-            </span>
-
-          </div>
-
-          <p class="description">
-            {{ task.description || 'No description' }}
-          </p>
-
-          <div class="task-info">
-
-            <div>
-              👤 {{ task.assignedTo?.nom }}
-            </div>
-
-            <div>
-              📅 {{ task.dueDate | date:'dd/MM/yyyy' }}
-            </div>
-
-          </div>
-
-          <div class="task-bottom">
-
-            <span [class]="getStatusClass(task.status)">
-              {{ task.status }}
-            </span>
-
-            <div class="actions">
-
-                <button
-                    *ngIf="authService.getRole() === 'EMPLOYEE'"
-                    class="progress-btn"
-                    (click)="updateStatus(task.id, 'IN_PROGRESS')"
-                >
-                    Start
-                </button>
-
-                <button
-                    *ngIf="authService.getRole() !== 'EMPLOYEE'"
-                    class="delete-btn"
-                    (click)="deleteTask(task.id)"
-                >
-                    Delete
-                </button>
-
-            </div>
-
-          </div>
-
+      <!-- TO DO -->
+      <div class="kanban-col todo-col">
+        <div class="col-header">
+          <span class="col-dot dot-yellow"></span>
+          <h3>To Do</h3>
+          <span class="col-count">{{ getTodoTasks().length }}</span>
         </div>
-
+        <div class="kanban-cards">
+          <div class="kanban-card" *ngFor="let task of getTodoTasks()">
+            <div class="card-top">
+              <span class="card-title">{{ task.title }}</span>
+              <span [class]="getPriorityClass(task.priority)">{{ task.priority }}</span>
+            </div>
+            <div class="card-meta">
+              <div class="card-avatar">{{ task.assignedTo?.nom?.charAt(0)?.toUpperCase() }}</div>
+              <span class="card-name">{{ task.assignedTo?.nom }}</span>
+            </div>
+            <div class="card-date">📅 {{ task.dueDate | date:'dd/MM/yyyy' }}</div>
+          </div>
+          <div *ngIf="getTodoTasks().length === 0" class="col-empty">No tasks</div>
+        </div>
       </div>
 
       <!-- IN PROGRESS -->
-
-      <div class="column">
-
-        <h3 class="progress-title">
-          🚀 IN PROGRESS
-        </h3>
-
-        <div
-          class="task-card"
-          *ngFor="let task of tasks.filter(t => t.status === 'IN_PROGRESS')"
-        >
-
-          <div class="task-top">
-
-            <h4>
-              {{ task.title }}
-            </h4>
-
-            <span [class]="getPriorityClass(task.priority)">
-              {{ task.priority }}
-            </span>
-
-          </div>
-
-          <p class="description">
-            {{ task.description || 'No description' }}
-          </p>
-
-          <div class="task-info">
-
-            <div>
-              👤 {{ task.assignedTo?.nom }}
-            </div>
-
-            <div>
-              📅 {{ task.dueDate | date:'dd/MM/yyyy' }}
-            </div>
-
-          </div>
-
-          <div class="task-bottom">
-
-                <span [class]="getStatusClass(task.status)">
-                {{ task.status }}
-                </span>
-
-                <div class="actions">
-
-                    <button
-                        *ngIf="authService.getRole() === 'EMPLOYEE'"
-                        class="done-btn"
-                        (click)="updateStatus(task.id, 'DONE')"
-                    >
-                        Complete
-                    </button>
-
-                    <button
-                        *ngIf="authService.getRole() !== 'EMPLOYEE'"
-                        class="delete-btn"
-                        (click)="deleteTask(task.id)"
-                    >
-                        Delete
-                    </button>
-
-                </div>
-
-          </div>
-
+      <div class="kanban-col progress-col">
+        <div class="col-header">
+          <span class="col-dot dot-blue"></span>
+          <h3>In Progress</h3>
+          <span class="col-count">{{ getInProgressTasks().length }}</span>
         </div>
-
+        <div class="kanban-cards">
+          <div class="kanban-card" *ngFor="let task of getInProgressTasks()">
+            <div class="card-top">
+              <span class="card-title">{{ task.title }}</span>
+              <span [class]="getPriorityClass(task.priority)">{{ task.priority }}</span>
+            </div>
+            <div class="card-progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+            <div class="card-meta">
+              <div class="card-avatar">{{ task.assignedTo?.nom?.charAt(0)?.toUpperCase() }}</div>
+              <span class="card-name">{{ task.assignedTo?.nom }}</span>
+            </div>
+            <div class="card-date">📅 {{ task.dueDate | date:'dd/MM/yyyy' }}</div>
+          </div>
+          <div *ngIf="getInProgressTasks().length === 0" class="col-empty">No tasks</div>
+        </div>
       </div>
 
       <!-- DONE -->
-
-      <div class="column">
-
-        <h3 class="done-title">
-          ✅ DONE
-        </h3>
-
-        <div
-          class="task-card"
-          *ngFor="let task of tasks.filter(t => t.status === 'DONE')"
-        >
-
-          <div class="task-top">
-
-            <h4>
-              {{ task.title }}
-            </h4>
-
-            <span [class]="getPriorityClass(task.priority)">
-              {{ task.priority }}
-            </span>
-
-          </div>
-
-          <p class="description">
-            {{ task.description || 'No description' }}
-          </p>
-
-          <div class="task-info">
-
-            <div>
-              👤 {{ task.assignedTo?.nom }}
-            </div>
-
-            <div>
-              📅 {{ task.dueDate | date:'dd/MM/yyyy' }}
-            </div>
-
-          </div>
-
-          <div class="task-bottom">
-
-            <span [class]="getStatusClass(task.status)">
-              {{ task.status }}
-            </span>
-
-            <div class="actions">
-
-              <button
-                *ngIf="authService.getRole() !== 'EMPLOYEE'"
-                class="delete-btn"
-                (click)="deleteTask(task.id)"
-              >
-                Delete
-              </button>
-
-            </div>
-
-          </div>
-
+      <div class="kanban-col done-col">
+        <div class="col-header">
+          <span class="col-dot dot-green"></span>
+          <h3>Done</h3>
+          <span class="col-count">{{ getDoneTasks().length }}</span>
         </div>
-
+        <div class="kanban-cards">
+          <div class="kanban-card" *ngFor="let task of getDoneTasks()">
+            <div class="card-top">
+              <span class="card-title">{{ task.title }}</span>
+              <span [class]="getPriorityClass(task.priority)">{{ task.priority }}</span>
+            </div>
+            <div class="card-meta">
+              <div class="card-avatar">{{ task.assignedTo?.nom?.charAt(0)?.toUpperCase() }}</div>
+              <span class="card-name">{{ task.assignedTo?.nom }}</span>
+            </div>
+            <div class="card-date">📅 {{ task.dueDate | date:'dd/MM/yyyy' }}</div>
+          </div>
+          <div *ngIf="getDoneTasks().length === 0" class="col-empty">No tasks</div>
+        </div>
       </div>
 
     </div>
 
-    <!-- EMPTY -->
+    <!-- TASKS TABLE -->
+    <div class="task-table-card">
 
-    <div
-      *ngIf="tasks.length === 0"
-      class="empty-state"
-    >
-
-      <div class="empty-icon">
-        📭
+      <div class="table-header">
+        <h3>All Tasks</h3>
       </div>
 
-      <h3>No tasks found</h3>
-
-      <p>
-        Create your first workspace task
-      </p>
+      <table class="tasks-table">
+        <thead>
+          <tr>
+            <th>Task</th>
+            <th>Assigned</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th *ngIf="authService.getRole() !== 'EMPLOYEE'">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let task of tasks">
+            <td>
+              <div class="task-name">
+                <div class="task-icon">📌</div>
+                <div>
+                  <div class="task-title">{{ task.title }}</div>
+                  <div class="task-desc">{{ task.description }}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="assigned-user">
+                <div class="avatar">{{ task.assignedTo?.nom?.charAt(0)?.toUpperCase() }}</div>
+                <span>{{ task.assignedTo?.nom }}</span>
+              </div>
+            </td>
+            <td>
+              <span [class]="getPriorityClass(task.priority)">{{ task.priority }}</span>
+            </td>
+            <td>
+              <span [class]="getStatusClass(task.status)">{{ task.status }}</span>
+            </td>
+            <td>{{ task.dueDate | date:'dd/MM/yyyy' }}</td>
+            <td *ngIf="authService.getRole() !== 'EMPLOYEE'">
+              <button class="edit-btn" (click)="updateStatus(task.id, 'IN_PROGRESS')">Edit</button>
+            </td>
+          </tr>
+          <tr *ngIf="tasks.length === 0">
+            <td colspan="6" class="empty-row">No tasks found</td>
+          </tr>
+        </tbody>
+      </table>
 
     </div>
 

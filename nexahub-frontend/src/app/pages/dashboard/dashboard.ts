@@ -1,15 +1,16 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SidebarComponent } from '../../components/sidebar/sidebar';
 import { AuthService } from '../../services/auth';
 import { UserService } from '../../services/user';
 import { RoleService } from '../../services/role';
 import { HistoriqueService } from '../../services/historique';
+import { TaskService } from '../../services/task';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, SidebarComponent],
+  imports: [CommonModule, SidebarComponent, RouterLink],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss'
 })
@@ -22,12 +23,14 @@ export class Dashboard implements OnInit {
   blockedUsers = 0;
   actionsToday = 0;
   recentActions: any[] = [];
+  recentTasks: any[] = [];
 
   constructor(
     public authService: AuthService,
     private userService: UserService,
     private roleService: RoleService,
     private historiqueService: HistoriqueService,
+    private taskService: TaskService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {
@@ -68,20 +71,50 @@ export class Dashboard implements OnInit {
         this.cdr.detectChanges();
       }
     });
+
+    this.loadTasks();
   }
 
-  getBadgeClass(action: string): string {
-    switch (action) {
-      case 'LOGIN': return 'badge bg-primary';
-      case 'REGISTER': return 'badge bg-success';
-      case 'CREATE': return 'badge bg-success';
-      case 'DELETE': return 'badge bg-danger';
-      case 'BLOCK': return 'badge bg-warning text-dark';
-      case 'ROLE_CHANGE': return 'badge bg-info text-dark';
-      default: return 'badge bg-secondary';
-    }
+  loadTasks(): void {
+    this.taskService.getAll().subscribe({
+      next: (tasks) => {
+        this.recentTasks = tasks.slice(0, 5);
+        this.cdr.detectChanges();
+      }
+    });
   }
-  isEmployee(): boolean {
-  return this.authService.getRole() === 'EMPLOYEE';
+
+
+ getPriorityClass(priority: string): string {
+  switch (priority) {
+    case 'HIGH':   return 'badge bg-high';
+    case 'MEDIUM': return 'badge bg-warning';
+    case 'LOW':    return 'badge bg-low';
+    default:       return 'badge bg-secondary';
+  }
 }
+
+  getStatusClass(status: string): string {
+  switch (status) {
+    case 'DONE':        return 'badge bg-success';
+    case 'IN_PROGRESS': return 'badge bg-inprogress';
+    default:            return 'badge bg-secondary';
+  }
+}
+getBadgeClass(action: string): string {
+  switch (action) {
+    case 'LOGIN':        return 'badge bg-primary';
+    case 'REGISTER':     return 'badge bg-success';
+    case 'CREATE':       return 'badge bg-success';
+    case 'TASK_CREATE':  return 'badge bg-info';
+    case 'TASK_UPDATE':  return 'badge bg-inprogress';
+    case 'DELETE':       return 'badge bg-danger';
+    case 'BLOCK':        return 'badge bg-warning';
+    case 'ROLE_CHANGE':  return 'badge bg-info';
+    default:             return 'badge bg-secondary';
+  }
+}
+  isEmployee(): boolean {
+    return this.authService.getRole() === 'EMPLOYEE';
+  }
 }

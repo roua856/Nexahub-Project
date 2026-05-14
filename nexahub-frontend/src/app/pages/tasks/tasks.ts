@@ -25,6 +25,7 @@ export class Tasks implements OnInit {
   user: any;
 
   loading = false;
+  showForm = false;
 
   newTask = {
     title: '',
@@ -143,36 +144,22 @@ export class Tasks implements OnInit {
       }
     });
   }
-
-  getStatusClass(status: string): string {
-
-    switch (status) {
-
-      case 'DONE':
-        return 'badge bg-success';
-
-      case 'IN_PROGRESS':
-        return 'badge bg-warning text-dark';
-
-      default:
-        return 'badge bg-secondary';
-    }
+getStatusClass(status: string): string {
+  switch (status) {
+    case 'DONE':        return 'badge bg-success';
+    case 'IN_PROGRESS': return 'badge bg-inprogress';
+    default:            return 'badge bg-secondary';
   }
+}
 
-  getPriorityClass(priority: string): string {
-
-    switch (priority) {
-
-      case 'HIGH':
-        return 'badge bg-danger';
-
-      case 'MEDIUM':
-        return 'badge bg-warning text-dark';
-
-      default:
-        return 'badge bg-info text-dark';
-    }
+getPriorityClass(priority: string): string {
+  switch (priority) {
+    case 'HIGH':   return 'badge bg-high';
+    case 'MEDIUM': return 'badge bg-warning';
+    case 'LOW':    return 'badge bg-low';
+    default:       return 'badge bg-secondary';
   }
+}
   getTodoTasks() {
     return this.tasks.filter(
         task => task.status === 'TODO'

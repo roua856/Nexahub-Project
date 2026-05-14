@@ -51,5 +51,14 @@ export const routes: Routes = [
       import('./pages/tasks/tasks').then(m => m.Tasks),
     canActivate: [authGuard]
  },
+
+ {
+  path: 'announcements',
+  loadComponent: () =>
+    import('./pages/announcements/announcements').then(m => m.Announcements),
+  canActivate: [authGuard]
+ },
   { path: '**', redirectTo: '/login' }
+
+  
 ];

@@ -1,0 +1,99 @@
+<div class="ann-layout">
+
+  <app-sidebar></app-sidebar>
+
+  <div class="main-content">
+
+    <!-- HEADER -->
+    <div class="ann-header">
+      <div>
+        <h2>Announcements</h2>
+        <p>Workspace news and updates</p>
+      </div>
+      <button
+        *ngIf="authService.getRole() !== 'EMPLOYEE'"
+        class="new-ann-btn"
+        (click)="showForm = !showForm"
+      >
+        + New Announcement
+      </button>
+      
+    </div>
+
+    <!-- CREATE FORM -->
+    <div
+      *ngIf="authService.getRole() !== 'EMPLOYEE' && showForm"
+      class="ann-form-card"
+    >
+      <h3>New Announcement</h3>
+      <input
+        type="text"
+        placeholder="Title"
+        [(ngModel)]="newAnn.title"
+      >
+      <textarea
+        rows="4"
+        placeholder="Write your announcement here..."
+        [(ngModel)]="newAnn.content"
+      ></textarea>
+      <div class="form-row">
+        <select [(ngModel)]="newAnn.type">
+          <option value="INFO">ℹ️ Info</option>
+          <option value="WARNING">⚠️ Warning</option>
+          <option value="SUCCESS">✅ Success</option>
+        </select>
+        <button
+            type="button"
+            class="post-btn"
+            (click)="postAnnouncement()">
+            Post
+        </button>
+      </div>
+    </div>
+
+    <!-- ANNOUNCEMENTS LIST -->
+    <div class="ann-list">
+
+      <div
+        class="ann-card"
+        *ngFor="let ann of announcements"
+        [class]="'ann-card ann-' + ann.type.toLowerCase()"
+      >
+        <div class="ann-card-header">
+          <div class="ann-left">
+            <div class="ann-icon">{{ getIcon(ann.type) }}</div>
+            <div>
+              <div class="ann-title">{{ ann.title }}</div>
+              <div class="ann-meta">
+                <span class="ann-author">{{ ann.createdBy?.nom }}</span>
+                <span class="ann-dot">·</span>
+                <span class="ann-date">{{ ann.date | date:'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span [class]="getTypeBadge(ann.type)">{{ ann.type }}</span>
+           <button
+                *ngIf="authService.getRole() !== 'EMPLOYEE'"
+                (click)="deleteAnnouncement(ann.id)"
+                class="delete-btn"
+                >
+                🗑
+            </button>
+          </div>
+        </div>
+
+        <div class="ann-content">{{ ann.content }}</div>
+
+      </div>
+
+      <div *ngIf="announcements.length === 0" class="ann-empty">
+        <div class="empty-icon">📢</div>
+        <p>No announcements yet</p>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

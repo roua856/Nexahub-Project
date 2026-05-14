@@ -6,196 +6,110 @@
 
     <!-- HEADER -->
     <div class="top-header">
-
       <div>
-        <h2>
-          Welcome back, {{ user?.nom }} 👋
-        </h2>
-
-        <p>
-          {{ user?.company }} Workspace ·
-          {{ authService.getRole() }}
-        </p>
+        <h2>Welcome back, {{ user?.nom }} 👋</h2>
+        <p>{{ user?.company }} Workspace · {{ authService.getRole() }}</p>
       </div>
-
       <div class="header-actions">
-
-        <div class="notification-btn">
-          🔔
-        </div>
-
-        <div class="mini-user">
-          {{ user?.nom?.charAt(0)?.toUpperCase() }}
-        </div>
-
+        <div class="notification-btn">🔔</div>
+        <div class="mini-user">{{ user?.nom?.charAt(0)?.toUpperCase() }}</div>
       </div>
-
     </div>
 
     <!-- STATS -->
     <div class="stats-grid">
-
-      <!-- TOTAL USERS -->
       <div class="stat-card">
-        <div class="stat-icon blue">
-          👥
-        </div>
-
+        <div class="stat-icon blue">👥</div>
         <div>
-          <div class="stat-number">
-            {{ totalUsers }}
-          </div>
-
-          <div class="stat-label">
-            Total Users
-          </div>
+          <div class="stat-number">{{ totalUsers }}</div>
+          <div class="stat-label">Total Users</div>
         </div>
       </div>
-
-      <!-- ACTIVE USERS -->
       <div class="stat-card">
-        <div class="stat-icon green">
-          ✅
-        </div>
-
+        <div class="stat-icon green">✅</div>
         <div>
-          <div class="stat-number">
-            {{ activeUsers }}
-          </div>
-
-          <div class="stat-label">
-            Active Users
-          </div>
+          <div class="stat-number">{{ activeUsers }}</div>
+          <div class="stat-label">Active Users</div>
         </div>
       </div>
-
-      <!-- BLOCKED USERS -->
       <div class="stat-card">
-        <div class="stat-icon orange">
-          🚫
-        </div>
-
+        <div class="stat-icon orange">🚫</div>
         <div>
-          <div class="stat-number">
-            {{ blockedUsers }}
-          </div>
-
-          <div class="stat-label">
-            Blocked Users
-          </div>
+          <div class="stat-number">{{ blockedUsers }}</div>
+          <div class="stat-label">Blocked Users</div>
         </div>
       </div>
-
-      <!-- ACTIONS -->
       <div class="stat-card">
-        <div class="stat-icon purple">
-          📜
-        </div>
-
+        <div class="stat-icon purple">📜</div>
         <div>
-          <div class="stat-number">
-            {{ actionsToday }}
-          </div>
-
-          <div class="stat-label">
-            Actions Today
-          </div>
+          <div class="stat-number">{{ actionsToday }}</div>
+          <div class="stat-label">Actions Today</div>
         </div>
       </div>
-
     </div>
 
     <!-- EMPLOYEE WELCOME -->
-    <div *ngIf="authService.getRole() === 'EMPLOYEE'"
-         class="employee-box">
-
-      <h3>
-        Your workspace is ready 🚀
-      </h3>
-
-      <p>
-        Soon you'll be able to manage tasks,
-        receive notifications and collaborate with your team.
-      </p>
-
+    <div *ngIf="authService.getRole() === 'EMPLOYEE'" class="employee-box">
+      <h3>Your workspace is ready 🚀</h3>
+      <p>Soon you'll be able to manage tasks, receive notifications and collaborate with your team.</p>
     </div>
 
     <!-- RECENT ACTIVITY -->
-    <div class="activity-card">
-
+    <div class="section-card">
       <div class="section-header">
-        <h3>
-          Recent Activity
-        </h3>
-
-        <span>
-          Last 5 actions
-        </span>
+        <h3>Recent Activity</h3>
+        <span class="section-sub">Last 5 actions</span>
       </div>
 
-      <div class="activity-table-wrapper">
+      <div class="activity-list">
+        <div class="activity-item" *ngFor="let action of recentActions">
+          <div class="activity-left">
+            <div class="avatar-sm">
+              {{ action.utilisateur?.nom?.charAt(0)?.toUpperCase() }}
+            </div>
+            <div class="activity-info">
+              <div class="activity-user">{{ action.utilisateur?.nom }}</div>
+              <div class="activity-detail">{{ action.details }}</div>
+            </div>
+          </div>
+          <div class="activity-right">
+            <span [class]="getBadgeClass(action.action)">{{ action.action }}</span>
+            <span class="activity-time">{{ action.dateAction | date:'HH:mm' }}</span>
+          </div>
+        </div>
+        <div *ngIf="recentActions.length === 0" class="empty-row">
+          No recent activity
+        </div>
+      </div>
+    </div>
 
-        <table class="activity-table">
-
-          <thead>
-            <tr>
-              <th>Time</th>
-              <th>User</th>
-              <th>Action</th>
-              <th>Details</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            <tr *ngFor="let action of recentActions">
-
-              <td class="time-cell">
-                {{ action.dateAction | date:'HH:mm' }}
-              </td>
-
-              <td>
-
-                <div class="user-row">
-
-                  <div class="avatar">
-                    {{ action.utilisateur?.nom?.charAt(0)?.toUpperCase() }}
-                  </div>
-
-                  <span>
-                    {{ action.utilisateur?.nom }}
-                  </span>
-
-                </div>
-
-              </td>
-
-              <td>
-                <span [class]="getBadgeClass(action.action)">
-                  {{ action.action }}
-                </span>
-              </td>
-
-              <td class="details-cell">
-                {{ action.details }}
-              </td>
-
-            </tr>
-
-            <tr *ngIf="recentActions.length === 0">
-
-              <td colspan="4" class="empty-row">
-                No recent activity
-              </td>
-
-            </tr>
-
-          </tbody>
-
-        </table>
-
+    <!-- TASK OVERVIEW -->
+    <div class="section-card">
+      <div class="section-header">
+        <h3>Task Overview</h3>
+        <a routerLink="/tasks" class="view-all-btn">View all</a>
       </div>
 
+      <div class="task-overview-list">
+        <div class="task-overview-item" *ngFor="let task of recentTasks">
+          <div class="task-ov-left">
+            <div class="task-ov-title">{{ task.title }}</div>
+            <div class="task-ov-meta">
+              <div class="task-ov-avatar">
+                {{ task.assignedTo?.nom?.charAt(0)?.toUpperCase() }}
+              </div>
+              <span class="task-ov-name">{{ task.assignedTo?.nom }}</span>
+            </div>
+          </div>
+          <div class="task-ov-right">
+            <span [class]="getPriorityClass(task.priority)">{{ task.priority }}</span>
+            <span [class]="getStatusClass(task.status)">{{ task.status }}</span>
+          </div>
+        </div>
+        <div *ngIf="recentTasks.length === 0" class="empty-row">
+          No tasks found
+        </div>
+      </div>
     </div>
 
   </div>
