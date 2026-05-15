@@ -1,15 +1,13 @@
 package com.nexahub.nexahub_backend.security;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 import com.nexahub.nexahub_backend.entites.Utilisateur;
 import com.nexahub.nexahub_backend.repositories.UtilisateurRepository;
+
+import java.util.List;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -18,9 +16,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UtilisateurRepository utilisateurRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) {
+
         Utilisateur user = utilisateurRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         String role = (user.getRole() != null) ? user.getRole().getNom() : "USER";
 
@@ -28,7 +27,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .username(user.getEmail())
                 .password(user.getMotDePasse())
                 .disabled(!user.isActif())
-                .authorities(List.of(new SimpleGrantedAuthority("ROLE_" + role)))
+                .authorities(List.of(
+                        new SimpleGrantedAuthority("ROLE_" + role)
+                ))
                 .build();
     }
 }

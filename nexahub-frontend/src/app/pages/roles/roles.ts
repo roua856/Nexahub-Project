@@ -5,6 +5,8 @@ import { SidebarComponent } from '../../components/sidebar/sidebar';
 import { RoleService } from '../../services/role';
 import { PermissionService } from '../../services/permission';
 import { Role, Permission } from '../../models/models';
+import { AuthService } from '../../services/auth';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-roles',
@@ -24,11 +26,13 @@ export class Roles implements OnInit {
   newRole = { nom: '', description: '' };
   newPermission = { nom: '', description: '' };
 
-  constructor(
-    private roleService: RoleService,
-    private permissionService: PermissionService,
-    private cdr: ChangeDetectorRef
-  ) {}
+ constructor(
+  public authService: AuthService,
+  private roleService: RoleService,
+  private permissionService: PermissionService,
+  private cdr: ChangeDetectorRef,
+  private router: Router
+ ) {}
 
   ngOnInit(): void {
     this.loadRoles();
@@ -125,4 +129,5 @@ export class Roles implements OnInit {
     if (n === 'GUEST') return 'badge-role badge-guest';
     return 'badge-role badge-user';
   }
+    
 }

@@ -10,6 +10,10 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
+  // =========================
+  // AUTH API
+  // =========================
+
   login(request: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, request);
   }
@@ -17,6 +21,10 @@ export class AuthService {
   register(request: RegisterRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, request);
   }
+
+  // =========================
+  // STORAGE
+  // =========================
 
   saveToken(token: string): void {
     localStorage.setItem('token', token);
@@ -35,34 +43,62 @@ export class AuthService {
     return user ? JSON.parse(user) : null;
   }
 
+  
+
   getRole(): string {
-    return this.getUser()?.role || '';
+    return this.getUser()?.role ?? '';
   }
 
   getCompany(): string {
-    return this.getUser()?.company || '';
+    return this.getUser()?.company ?? '';
   }
 
   isLoggedIn(): boolean {
-    return this.getToken() !== null;
+    return !!this.getToken();
   }
 
+
+
   isAdmin(): boolean {
-    return this.getRole() === 'ADMIN'
-        || this.getRole() === 'SUPER_ADMIN';
+    return this.getRole() === 'ADMIN' || this.getRole() === 'SUPER_ADMIN';
   }
 
   isManager(): boolean {
     return this.getRole() === 'MANAGER';
   }
 
+  isEmployee(): boolean {
+    const role = this.getRole();
+    return role === 'USER' || role === 'EMPLOYEE';
+  }
+
   isAdminOrManager(): boolean {
     return this.isAdmin() || this.isManager();
   }
 
-  isEmployee(): boolean {
-    return this.getRole() === 'EMPLOYEE';
+  
+
+  getPermissions(): string[] {
+    const role = this.getRole();
+
+    if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
+      return [
+        'VIEW_DASHBOARD', 'VIEW_USERS', 'VIEW_TASKS', 'CREATE_TASK',
+        'VIEW_ROLES', 'VIEW_AUDIT', 'VIEW_ANNOUNCEMENTS', 'VIEW_PROFILE', 'EDIT_USERS'
+      ];
+    }
+
+    const user = this.getUser();
+    return user?.permissions || [];
   }
+
+  hasPermission(permission: string): boolean {
+    return this.getPermissions().includes(permission);
+  }
+
+  // =========================
+  // LOGOUT
+  // =========================
 
   logout(): void {
     localStorage.removeItem('token');

@@ -64,7 +64,8 @@ export class Tasks implements OnInit {
     this.taskService.getAll().subscribe({
       next: (data) => {
 
-        this.tasks = data;
+        this.tasks = data || [];
+        this.myTasks = data || [];
 
         this.cdr.detectChanges();
       }
@@ -181,44 +182,30 @@ export class Tasks implements OnInit {
   }
 
   getFilteredTasks() {
-
-    if (this.authService.isEmployee()) {
-
-      return this.tasks.filter(
-        task => task.assignedTo?.id === this.user?.id
-      );
+  if (this.authService.isEmployee()) {
+    return this.tasks.filter(
+      task => task.assignedTo?.id === this.user?.id
+    );
+  }
+  return this.tasks;
+ }
+    getTodoTasks() {
+    return this.tasks.filter(task =>
+        task.status?.toUpperCase() === 'TODO' ||
+        task.status?.toUpperCase() === 'TO_DO'
+    );
     }
 
-    return this.tasks;
-  }
-
- getTodoTasks() {
-
-  return this.tasks.filter(task =>
-
-    task.status === 'TODO' ||
-    task.status === 'TO_DO'
-
-  );
- }
-
- getInProgressTasks() {
-
+    getInProgressTasks() {
     return this.tasks.filter(task =>
-
-        task.status === 'IN_PROGRESS' ||
-        task.status === 'INPROGRESS' ||
-        task.status === 'In Progress'
-
+        task.status?.toUpperCase() === 'IN_PROGRESS' ||
+        task.status?.toUpperCase() === 'INPROGRESS'
     );
- }
+    }
 
- getDoneTasks() {
-
+    getDoneTasks() {
     return this.tasks.filter(task =>
-
-        task.status === 'DONE'
-      
+        task.status?.toUpperCase() === 'DONE'
     );
- }
+    }
 }

@@ -11,7 +11,7 @@
         <p>Workspace news and updates</p>
       </div>
       <button
-        *ngIf="authService.getRole() !== 'EMPLOYEE'"
+        *ngIf="authService.hasPermission('CREATE_ANNOUNCEMENT')"
         class="new-ann-btn"
         (click)="showForm = !showForm"
       >
@@ -22,7 +22,7 @@
 
     <!-- CREATE FORM -->
     <div
-      *ngIf="authService.getRole() !== 'EMPLOYEE' && showForm"
+      *ngIf="authService.hasPermission('CREATE_ANNOUNCEMENT') && showForm"
       class="ann-form-card"
     >
       <h3>New Announcement</h3>
@@ -74,7 +74,7 @@
           <div style="display:flex; align-items:center; gap:10px;">
             <span [class]="getTypeBadge(ann.type)">{{ ann.type }}</span>
            <button
-                *ngIf="authService.getRole() !== 'EMPLOYEE'"
+                *ngIf="authService.hasPermission('DELETE_ANNOUNCEMENT')"
                 (click)="deleteAnnouncement(ann.id)"
                 class="delete-btn"
                 >

@@ -14,7 +14,7 @@
 
       <!-- ONLY ADMIN/MANAGER -->
       <button
-        *ngIf="authService.isAdminOrManager()"
+        *ngIf="authService.hasPermission('CREATE_TASK')"
         class="new-task-btn"
         (click)="showForm = !showForm">
 
@@ -26,7 +26,7 @@
 
     <!-- CREATE TASK -->
     <div
-      *ngIf="authService.isAdminOrManager() && showForm"
+      *ngIf="authService.hasPermission('CREATE_TASK') && showForm"
       class="create-task-card">
 
       <h3>Create New Task</h3>
@@ -139,7 +139,7 @@
 
             <!-- EMPLOYEE ACTIONS -->
             <div
-              *ngIf="authService.isEmployee()"
+              *ngIf="authService.hasPermission('UPDATE_TASK')"
               class="employee-actions">
 
               <button
@@ -221,7 +221,7 @@
 
             <!-- EMPLOYEE ACTIONS -->
             <div
-              *ngIf="authService.isEmployee()"
+              *ngIf="authService.hasPermission('UPDATE_TASK')"
               class="employee-actions">
 
               <button
@@ -315,7 +315,7 @@
 
     <!-- ADMIN TABLE ONLY -->
     <div
-      *ngIf="authService.isAdminOrManager()"
+      *ngIf="authService.hasPermission('VIEW_TASKS')"
       class="task-table-card">
 
       <div class="table-header">

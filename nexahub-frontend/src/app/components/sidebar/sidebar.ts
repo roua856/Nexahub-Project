@@ -14,7 +14,7 @@ export class SidebarComponent {
   user: any;
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private router: Router
   ) {
     this.user = this.authService.getUser();
@@ -26,6 +26,9 @@ export class SidebarComponent {
 
   isAdmin(): boolean {
     return this.getRole() === 'ADMIN' || this.getRole() === 'SUPER_ADMIN';
+  }
+  isManager(): boolean {
+   return this.getRole() === 'MANAGER';
   }
 
   isAdminOrManager(): boolean {

@@ -2,29 +2,28 @@
 
   <!-- TOP -->
   <div>
-      <div class="logo">
 
-        <div class="logo-icon">
+    <div class="logo">
 
-          <span>◆</span>
+      <div class="logo-icon">
+        <span>◆</span>
+      </div>
 
+      <div>
+        <div class="logo-title">
+          NexaHub
         </div>
 
-        <div>
-
-          <div class="logo-title">
-            NexaHub
-          </div>
-
-          <div class="logo-subtitle">
-            Workspace Platform
-          </div>
-
+        <div class="logo-subtitle">
+          Workspace Platform
         </div>
-     </div>
+      </div>
+
+    </div>
 
     <!-- DASHBOARD -->
     <a
+      *ngIf="authService.hasPermission('VIEW_DASHBOARD')"
       class="nav-item"
       routerLink="/dashboard"
       routerLinkActive="active">
@@ -34,72 +33,87 @@
     </a>
 
     <!-- USERS -->
-    <a *ngIf="isAdminOrManager()"
-       class="nav-item"
-       routerLink="/users"
-       routerLinkActive="active">
+    <a
+      *ngIf="authService.hasPermission('VIEW_USERS')"
+      class="nav-item"
+      routerLink="/users"
+      routerLinkActive="active">
 
       <span class="nav-icon">◎</span>
       <span>Users</span>
     </a>
 
     <!-- TASKS -->
-    <a class="nav-item"
-       routerLink="/tasks"
-       routerLinkActive="active">
+    <a
+      *ngIf="authService.hasPermission('VIEW_TASKS')"
+      class="nav-item"
+      routerLink="/tasks"
+      routerLinkActive="active">
 
       <span class="nav-icon">▣</span>
 
       <span>
-        {{ isAdminOrManager() ? 'Tasks' : 'My Tasks' }}
+        {{ authService.hasPermission('CREATE_TASK') ? 'Tasks' : 'My Tasks' }}
       </span>
     </a>
 
     <!-- ROLES -->
-    <a *ngIf="isAdmin()"
-       class="nav-item"
-       routerLink="/roles"
-       routerLinkActive="active">
+    <a
+      *ngIf="authService.hasPermission('VIEW_ROLES')"
+      class="nav-item"
+      routerLink="/roles"
+      routerLinkActive="active">
 
       <span class="nav-icon">⬢</span>
       <span>Roles & Permissions</span>
     </a>
 
     <!-- AUDIT -->
-    <a *ngIf="isAdminOrManager()"
-       class="nav-item"
-       routerLink="/audit"
-       routerLinkActive="active">
+    <a
+      *ngIf="authService.hasPermission('VIEW_AUDIT')"
+      class="nav-item"
+      routerLink="/audit"
+      routerLinkActive="active">
 
       <span class="nav-icon">☰</span>
       <span>Audit Log</span>
     </a>
-    <a class="nav-item"
+
+    <!-- ANNOUNCEMENTS -->
+    <a
+      *ngIf="authService.hasPermission('VIEW_ANNOUNCEMENTS')"
+      class="nav-item"
       routerLink="/announcements"
       routerLinkActive="active">
+
       <span class="nav-icon">📢</span>
       <span>Announcements</span>
-   </a>
+    </a>
 
     <!-- PROFILE -->
-    <a class="nav-item"
-       routerLink="/profile"
-       routerLinkActive="active">
+    <a
+      *ngIf="authService.hasPermission('VIEW_PROFILE')"
+      class="nav-item"
+      routerLink="/profile"
+      routerLinkActive="active">
 
       <span class="nav-icon">○</span>
       <span>My Profile</span>
     </a>
+
   </div>
 
   <!-- BOTTOM -->
   <div>
 
     <div class="user-card">
+
       <div class="avatar">
         {{ user?.nom?.charAt(0)?.toUpperCase() }}
       </div>
 
       <div class="user-info">
+
         <div class="user-name">
           {{ user?.nom }}
         </div>
@@ -107,6 +121,7 @@
         <div class="user-role">
           {{ getRole() }}
         </div>
+
       </div>
     </div>
 
@@ -116,4 +131,5 @@
     </div>
 
   </div>
+
 </div>
