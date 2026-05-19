@@ -1,213 +1,140 @@
-<div style="display:flex">
+<div class="roles-layout">
+
   <app-sidebar></app-sidebar>
+
   <div class="main-content">
 
-    <div class="page-header">
-
-      <h2>Roles & Permissions</h2>
-      <div style="display:flex; gap:10px;">
-        <button class="btn-secondary"
-                (click)="showCreatePermission=true">
+    <!-- HEADER -->
+    <div class="roles-header">
+      <div>
+        <h2>Roles & Permissions</h2>
+        <p>Manage roles and their permissions</p>
+      </div>
+      <div class="header-btns">
+        <button class="new-perm-btn" (click)="showCreatePermission=true">
           + New permission
         </button>
-        <button class="btn-primary"
-                style="width:auto; padding:9px 18px;"
-                (click)="showCreateRole=true">
+        <button class="new-role-btn" (click)="showCreateRole=true">
           + New role
         </button>
       </div>
     </div>
-    <div class="main-content">    
 
-  <div class="page-header">
-    <h2>Roles & Permissions</h2>
+    <!-- TWO COLUMNS -->
+    <div class="roles-grid">
 
-    <div class="row g-3">
+      <!-- ROLES LIST -->
+      <div class="roles-card">
+        <h3>Roles</h3>
 
-      <!-- Roles list -->
-      <div class="col-md-4">
-        <div class="card-box">
-          <h6 style="font-weight:600; margin-bottom:12px;">Roles</h6>
+        <div *ngIf="roles.length === 0" class="empty-state">
+          No roles yet. Click "+ New role"
+        </div>
 
-          <div *ngIf="roles.length === 0"
-               style="color:#636e72; font-size:13px;
-                      text-align:center; padding:20px;">
-            No roles yet. Click "+ New role"
+        <div
+          *ngFor="let role of roles"
+          (click)="selectRole(role)"
+          [class.role-item-active]="selectedRole?.id === role.id"
+          class="role-item">
+
+          <div>
+            <span [class]="getRoleClass(role.nom)">{{ role.nom }}</span>
+            <div class="role-desc">{{ role.description }}</div>
           </div>
 
-          <div *ngFor="let role of roles"
-               (click)="selectRole(role)"
-               [style.background]="selectedRole?.id === role.id ? '#e6f1fb' : 'white'"
-               style="padding:12px; border-radius:8px; cursor:pointer;
-                      margin-bottom:8px; border:1px solid #f0f0f0;
-                      display:flex; justify-content:space-between;
-                      align-items:center;">
+          <button class="delete-role-btn" (click)="deleteRole(role.id, $event)">✕</button>
 
+        </div>
+      </div>
+
+      <!-- PERMISSIONS PANEL -->
+      <div class="perms-card">
+
+        <div *ngIf="!selectedRole" class="perms-empty">
+          <svg width="56" height="56" fill="none" viewBox="0 0 24 24">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="perms-empty-title">Select a role to manage its permissions</div>
+          <div class="perms-empty-sub">Click any role on the left</div>
+        </div>
+
+        <div *ngIf="selectedRole">
+
+          <div class="perms-header">
             <div>
-              <span [class]="getRoleClass(role.nom)">{{ role.nom }}</span>
-              <div style="font-size:12px; color:#636e72; margin-top:4px;">
-                {{ role.description }}
-              </div>
+              <h3 style="margin:0">
+                Permissions for
+                <span [class]="getRoleClass(selectedRole.nom)">{{ selectedRole.nom }}</span>
+              </h3>
+              <p class="perms-hint">Blue = allowed · Gray = not allowed</p>
             </div>
-
-            <button class="btn-danger"
-                    style="padding:3px 8px; font-size:11px;"
-                    (click)="deleteRole(role.id, $event)">
-              ✕
-            </button>
-
-          </div>
-        </div>
-      </div>
-
-      <!-- Permissions panel -->
-      <div class="col-md-8">
-        <div class="card-box">
-
-          <div *ngIf="!selectedRole"
-               style="text-align:center; color:#636e72; padding:60px 20px;">
-            <div style="font-size:40px; margin-bottom:12px;">🛡️</div>
-            <div style="font-weight:500; font-size:15px;">
-              Select a role to manage its permissions
-            </div>
-            <div style="font-size:13px; margin-top:6px;">
-              Click any role on the left
-            </div>
+            <button class="save-btn" (click)="savePermissions()">Save</button>
           </div>
 
-          <div *ngIf="selectedRole">
+          <div *ngIf="saveMessage" class="save-msg">{{ saveMessage }}</div>
 
-            <div style="display:flex; justify-content:space-between;
-                        align-items:center; margin-bottom:16px;">
+          <div *ngIf="permissions.length === 0" class="empty-state">
+            No permissions yet. Click "+ New permission"
+          </div>
 
-              <div>
-                <h6 style="font-weight:600; margin:0;">
-                  Permissions for:
-                  <span [class]="getRoleClass(selectedRole.nom)">
-                    {{ selectedRole.nom }}
-                  </span>
-                </h6>
-
-                <div style="font-size:12px; color:#636e72; margin-top:4px;">
-                  Blue = allowed · Gray = not allowed
-                </div>
-              </div>
-
-              <button class="btn-primary"
-                      style="width:auto; padding:8px 16px;"
-                      (click)="savePermissions()">
-                Save
-              </button>
-
+          <div *ngFor="let perm of permissions" class="perm-row">
+            <div>
+              <div class="perm-name">{{ perm.nom }}</div>
+              <div class="perm-desc">{{ perm.description }}</div>
             </div>
-
-            <div *ngIf="saveMessage" class="alert-success">
-              {{ saveMessage }}
+            <div
+              [class]="hasPermission(perm.id) ? 'toggle toggle-on' : 'toggle toggle-off'"
+              (click)="togglePermission(perm.id)">
+              <div class="toggle-knob"></div>
             </div>
-
-            <div *ngIf="permissions.length === 0"
-                 style="color:#636e72; font-size:13px;
-                        text-align:center; padding:20px;">
-              No permissions yet. Click "+ New permission"
-            </div>
-
-            <div *ngFor="let perm of permissions"
-                 style="display:flex; justify-content:space-between;
-                        align-items:center; padding:12px 0;
-                        border-bottom:1px solid #f0f0f0;">
-
-              <div>
-                <div style="font-size:14px; font-weight:500;">
-                  {{ perm.nom }}
-                </div>
-                <div style="font-size:12px; color:#636e72;">
-                  {{ perm.description }}
-                </div>
-              </div>
-
-              <div class="toggle-switch"
-                   [class]="hasPermission(perm.id) ?
-                     'toggle-switch toggle-on' :
-                     'toggle-switch toggle-off'"
-                   (click)="togglePermission(perm.id)">
-                <div class="toggle-knob"></div>
-              </div>
-
-            </div>
-
           </div>
 
         </div>
+
       </div>
+
     </div>
 
-    <!-- Create Role Modal -->
+    <!-- CREATE ROLE MODAL -->
     <div *ngIf="showCreateRole" class="modal-overlay">
       <div class="modal-box">
-        <h5>Create new role</h5>
+        <h4>Create new role</h4>
         <p>Define a new role for your company</p>
-
         <div class="form-group">
           <label>Role name</label>
-          <input type="text" class="form-control"
-                 [(ngModel)]="newRole.nom"
-                 placeholder="e.g. MANAGER">
+          <input type="text" class="form-control" [(ngModel)]="newRole.nom" placeholder="e.g. MANAGER">
         </div>
-
         <div class="form-group">
           <label>Description</label>
-          <input type="text" class="form-control"
-                 [(ngModel)]="newRole.description"
-                 placeholder="e.g. Can manage team members">
+          <input type="text" class="form-control" [(ngModel)]="newRole.description" placeholder="e.g. Can manage team members">
         </div>
-
-        <div style="display:flex; gap:10px;">
-          <button class="btn-primary" style="width:auto; flex:1;"
-                  (click)="createRole()">
-            Create
-          </button>
-          <button class="btn-secondary"
-                  (click)="showCreateRole=false">
-            Cancel
-          </button>
+        <div class="modal-actions">
+          <button class="btn-primary" (click)="createRole()">Create</button>
+          <button class="btn-secondary" (click)="showCreateRole=false">Cancel</button>
         </div>
-
       </div>
     </div>
 
-    <!-- Create Permission Modal -->
+    <!-- CREATE PERMISSION MODAL -->
     <div *ngIf="showCreatePermission" class="modal-overlay">
       <div class="modal-box">
-        <h5>Create new permission</h5>
+        <h4>Create new permission</h4>
         <p>Define a new permission</p>
-
         <div class="form-group">
           <label>Permission name</label>
-          <input type="text" class="form-control"
-                 [(ngModel)]="newPermission.nom"
-                 placeholder="e.g. VIEW_USERS">
+          <input type="text" class="form-control" [(ngModel)]="newPermission.nom" placeholder="e.g. VIEW_USERS">
         </div>
-
         <div class="form-group">
           <label>Description</label>
-          <input type="text" class="form-control"
-                 [(ngModel)]="newPermission.description"
-                 placeholder="e.g. Allows viewing users">
+          <input type="text" class="form-control" [(ngModel)]="newPermission.description" placeholder="e.g. Allows viewing users">
         </div>
-
-        <div style="display:flex; gap:10px;">
-          <button class="btn-primary" style="width:auto; flex:1;"
-                  (click)="createPermission()">
-            Create
-          </button>
-          <button class="btn-secondary"
-                  (click)="showCreatePermission=false">
-            Cancel
-          </button>
+        <div class="modal-actions">
+          <button class="btn-primary" (click)="createPermission()">Create</button>
+          <button class="btn-secondary" (click)="showCreatePermission=false">Cancel</button>
         </div>
-
       </div>
     </div>
 
   </div>
+
 </div>

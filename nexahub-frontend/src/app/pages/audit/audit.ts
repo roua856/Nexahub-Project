@@ -44,16 +44,32 @@ export class Audit implements OnInit {
     this.cdr.detectChanges();
   }
 
+    getAvatarStyle(name: string): object {
+    const colors = [
+      { background: '#dbeafe', color: '#2563eb' },
+      { background: '#dcfce7', color: '#16a34a' },
+      { background: '#fce7f3', color: '#be185d' },
+      { background: '#ede9fe', color: '#7c3aed' },
+      { background: '#fef3c7', color: '#d97706' },
+      { background: '#e0f2fe', color: '#0369a1' },
+      { background: '#f3e8ff', color: '#9333ea' },
+      { background: '#ffedd5', color: '#ea580c' },
+    ];
+    if (!name) return { background: '#dbeafe', color: '#2563eb' };
+    const index = name.charCodeAt(0) % colors.length;
+    return colors[index];
+  }
+
   getBadgeClass(action: string): string {
     switch (action) {
-      case 'LOGIN': return 'badge bg-primary';
-      case 'REGISTER': return 'badge bg-success';
-      case 'CREATE': return 'badge bg-success';
-      case 'DELETE': return 'badge bg-danger';
-      case 'BLOCK': return 'badge bg-warning text-dark';
-      case 'ROLE_CHANGE': return 'badge bg-info text-dark';
+      case 'LOGIN':           return 'badge bg-primary';
+      case 'REGISTER':        return 'badge bg-success';
+      case 'CREATE':          return 'badge bg-success';
+      case 'DELETE':          return 'badge bg-danger';
+      case 'BLOCK':           return 'badge bg-warning';
+      case 'ROLE_CHANGE':     return 'badge bg-info';
       case 'PASSWORD_CHANGE': return 'badge bg-secondary';
-      default: return 'badge bg-secondary';
+      default:                return 'badge bg-secondary';
     }
   }
 
@@ -85,14 +101,17 @@ export class Audit implements OnInit {
     );
   }
   getIcon(action: string): string {
-  switch (action) {
-    case 'LOGIN': return '🔐';
-    case 'CREATE': return '➕';
-    case 'DELETE': return '❌';
-    case 'BLOCK': return '🚫';
-    case 'ROLE_CHANGE': return '🔁';
-    case 'PASSWORD_CHANGE': return '🔑';
-    default: return '•';
+    switch (action) {
+      case 'LOGIN':           return '🔑';
+      case 'REGISTER':        return '✅';
+      case 'CREATE':          return '➕';
+      case 'DELETE':          return '🗑';
+      case 'BLOCK':           return '🚫';
+      case 'ROLE_CHANGE':     return '🔄';
+      case 'PASSWORD_CHANGE': return '🔐';
+      default:                return '';
+    }
   }
- }
+
+  
 }

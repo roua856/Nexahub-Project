@@ -1,93 +1,79 @@
-<div style="display:flex">
+<div class="audit-layout">
+
   <app-sidebar></app-sidebar>
 
   <div class="main-content">
 
     <!-- HEADER -->
-    <div class="page-header">
-      <h2>Audit Log</h2>
-      <button class="btn-secondary" (click)="exportCSV()">
-        Export CSV
+    <div class="audit-header">
+      <div>
+        <h2>Activity Log</h2>
+        <p>Every action, tracked and recorded</p>
+      </div>
+      <button class="export-btn" (click)="exportCSV()">
+        ⬇ Export CSV
       </button>
     </div>
 
-    <!-- ✅ ADD HERE -->
-    <div class="toolbar">
-
-      <div class="filters">
-        <button *ngFor="let f of filters"
-                [class.active]="selectedFilter === f"
-                (click)="filterBy(f)">
+    <!-- TOOLBAR -->
+    <div class="audit-toolbar">
+      <div class="filter-tabs">
+        <button
+          *ngFor="let f of filters"
+          [class.active-tab]="selectedFilter === f"
+          (click)="filterBy(f)">
           {{ f }}
         </button>
       </div>
-
-      <div class="actions">
-        <input type="text"
-               placeholder="Search user..."
-               (input)="onSearch($event)" />
-
-        <button class="btn-export" (click)="exportCSV()">
-          ⬇ Export
-        </button>
+      <div class="search-box">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8" stroke="#9ca3af" stroke-width="2"/>
+          <path d="m21 21-4.35-4.35" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input type="text" placeholder="Search user..." (input)="onSearch($event)">
       </div>
-
     </div>
 
-    <!-- ✅ NEW TABLE -->
-    <div class="card-box">
-      <table>
+    <!-- TABLE -->
+    <div class="audit-card">
+      <table class="audit-table">
         <thead>
           <tr>
-            <th>Time</th>
-            <th>User</th>
-            <th>Action</th>
-            <th>Details</th>
-            <th>Company</th>
+            <th>TIME</th>
+            <th>USER</th>
+            <th>ACTION</th>
+            <th>DETAILS</th>
+            <th>COMPANY</th>
           </tr>
         </thead>
-
         <tbody>
           <tr *ngFor="let action of filtered">
-
-            <td class="time">
+            <td class="audit-time">
               {{ action.dateAction | date:'dd/MM HH:mm' }}
             </td>
-
             <td>
-              <div class="user-cell">
-                <div class="avatar">
+              <div class="audit-user">
+                <div class="audit-avatar" [ngStyle]="getAvatarStyle(action.utilisateur?.nom || '')">
                   {{ action.utilisateur?.nom?.charAt(0)?.toUpperCase() }}
                 </div>
-                {{ action.utilisateur?.nom }}
+                <span>{{ action.utilisateur?.nom }}</span>
               </div>
             </td>
-
             <td>
-              <span class="badge" [ngClass]="action.action">
+              <span [class]="getBadgeClass(action.action)">
                 {{ getIcon(action.action) }} {{ action.action }}
               </span>
             </td>
-
-            <td class="details">
-              {{ action.details }}
-            </td>
-
-            <td>
-              {{ action.company }}
-            </td>
-
+            <td class="audit-details">{{ action.details }}</td>
+            <td>{{ action.company }}</td>
           </tr>
-
           <tr *ngIf="filtered.length === 0">
-            <td colspan="5" class="empty">
-              No actions found
-            </td>
+            <td colspan="5" class="audit-empty">No actions found</td>
           </tr>
-
         </tbody>
       </table>
     </div>
 
   </div>
+
 </div>

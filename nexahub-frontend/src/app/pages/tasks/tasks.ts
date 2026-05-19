@@ -208,4 +208,19 @@ export class Tasks implements OnInit {
         task.status?.toUpperCase() === 'DONE'
     );
     }
+    getAvatarStyle(name: string): object {
+    const colors = [
+      { background: '#dbeafe', color: '#2563eb' },
+      { background: '#dcfce7', color: '#16a34a' },
+      { background: '#fce7f3', color: '#be185d' },
+      { background: '#ede9fe', color: '#7c3aed' },
+      { background: '#fef3c7', color: '#d97706' },
+      { background: '#e0f2fe', color: '#0369a1' },
+      { background: '#f3e8ff', color: '#9333ea' },
+      { background: '#ffedd5', color: '#ea580c' },
+    ];
+    if (!name) return { background: '#dbeafe', color: '#2563eb' };
+    const index = name.charCodeAt(0) % colors.length;
+    return colors[index];
+  }
 }

@@ -84,7 +84,7 @@ export class AuthService {
     if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
       return [
         'VIEW_DASHBOARD', 'VIEW_USERS', 'VIEW_TASKS', 'CREATE_TASK',
-        'VIEW_ROLES', 'VIEW_AUDIT', 'VIEW_ANNOUNCEMENTS', 'VIEW_PROFILE', 'EDIT_USERS'
+        'VIEW_ROLES', 'VIEW_AUDIT', 'VIEW_ANNOUNCEMENTS', 'VIEW_PROFILE', 'EDIT_USERS', 'DELETE_ANNOUNCEMENT'
       ];
     }
 
