@@ -38,12 +38,7 @@ export const routes: Routes = [
       import('./pages/profile/profile').then(m => m.Profile),
     canActivate: [authGuard]
   },
-  {
-    path: 'super-admin',
-    loadComponent: () =>
-      import('./pages/super-admin/super-admin').then(m => m.SuperAdmin),
-    canActivate: [authGuard]
-  },
+
 
   {
     path: 'tasks',

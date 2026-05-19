@@ -9,11 +9,7 @@ import { UserService } from '../../services/user';
 
 @Component({
   selector: 'app-tasks',
-  imports: [
-    CommonModule,
-    FormsModule,
-    SidebarComponent
-  ],
+  imports: [CommonModule, FormsModule, SidebarComponent],
   templateUrl: './tasks.html',
   styleUrl: './tasks.scss'
 })
@@ -21,13 +17,12 @@ export class Tasks implements OnInit {
 
   tasks: any[] = [];
   users: any[] = [];
-
   myTasks: any[] = [];
-
   user: any;
-
+  currentUser: any;
   loading = false;
   showForm = false;
+  today = new Date().toISOString().split('T')[0];
 
   newTask = {
     title: '',
@@ -44,93 +39,63 @@ export class Tasks implements OnInit {
     private cdr: ChangeDetectorRef
   ) {
     this.user = this.authService.getUser();
+    this.currentUser = this.authService.getUser();
   }
 
   ngOnInit(): void {
-
     if (this.authService.isEmployee()) {
-
       this.loadMyTasks();
-
     } else {
-
       this.loadAllTasks();
       this.loadUsers();
     }
   }
 
   loadAllTasks(): void {
-
     this.taskService.getAll().subscribe({
       next: (data) => {
-
         this.tasks = data || [];
         this.myTasks = data || [];
-
         this.cdr.detectChanges();
       }
     });
   }
 
   loadMyTasks(): void {
-
     this.taskService.getMyTasks().subscribe({
       next: (data) => {
-
         this.myTasks = data;
         this.tasks = data;
-        console.log(this.tasks);
-
         this.cdr.detectChanges();
       }
     });
   }
 
   loadUsers(): void {
-
     this.userService.getByCompany(this.user.company).subscribe({
       next: (data) => {
-
-        this.users = data.filter(
-          (u: any) => u.role?.nom === 'EMPLOYEE'
-        );
-
+        this.users = data.filter((u: any) => 
+  u.role?.nom === 'EMPLOYEE' || u.role?.nom === 'MANAGER');
         this.cdr.detectChanges();
       }
     });
   }
 
   createTask(): void {
-
-    if (!this.newTask.title || !this.newTask.assignedTo) {
-      return;
-    }
-
+    if (!this.newTask.title || !this.newTask.assignedTo) return;
     this.loading = true;
-
     this.taskService.create(this.newTask as any).subscribe({
       next: () => {
-
-        this.newTask = {
-          title: '',
-          description: '',
-          priority: 'MEDIUM',
-          dueDate: '',
-          assignedTo: null
-        };
-
+        this.newTask = { title: '', description: '', priority: 'MEDIUM', dueDate: '', assignedTo: null };
         this.loading = false;
-
         this.loadAllTasks();
       }
     });
   }
 
   updateStatus(taskId: number, status: string): void {
-
     this.taskService.updateStatus(taskId, status).subscribe({
       next: () => {
-
         if (this.authService.isEmployee()) {
           this.loadMyTasks();
         } else {
@@ -140,75 +105,59 @@ export class Tasks implements OnInit {
     });
   }
 
-  setInProgress(taskId: number): void {
-    this.updateStatus(taskId, 'IN_PROGRESS');
+  isAssignedToMe(task: any): boolean {
+    if (this.authService.isEmployee()) return true;
+    if (this.authService.getRole() === 'MANAGER') {
+      return task.assignedTo?.id === this.currentUser?.id ||
+            task.assignedTo?.email === this.currentUser?.email;
+    }
+    return false;
   }
-
-  setDone(taskId: number): void {
-    this.updateStatus(taskId, 'DONE');
-  }
-
-  getStatusClass(status: string): string {
-
+    getStatusClass(status: string): string {
     switch (status) {
-
-      case 'DONE':
-        return 'badge bg-success';
-
-      case 'IN_PROGRESS':
-        return 'badge bg-inprogress';
-
-      default:
-        return 'badge bg-secondary';
+      case 'DONE':        return 'badge bg-success';
+      case 'IN_PROGRESS': return 'badge bg-inprogress';
+      case 'TODO':        return 'badge bg-warning';
+      case 'TO_DO':       return 'badge bg-warning';
+      default:            return 'badge bg-secondary';
     }
   }
 
   getPriorityClass(priority: string): string {
-
     switch (priority) {
-
-      case 'HIGH':
-        return 'badge bg-high';
-
-      case 'MEDIUM':
-        return 'badge bg-warning';
-
-      case 'LOW':
-        return 'badge bg-low';
-
-      default:
-        return 'badge bg-secondary';
+      case 'HIGH':   return 'badge bg-high';
+      case 'MEDIUM': return 'badge bg-warning';
+      case 'LOW':    return 'badge bg-low';
+      default:       return 'badge bg-secondary';
     }
   }
 
   getFilteredTasks() {
-  if (this.authService.isEmployee()) {
-    return this.tasks.filter(
-      task => task.assignedTo?.id === this.user?.id
+    if (this.authService.isEmployee()) {
+      return this.tasks.filter(task => task.assignedTo?.id === this.user?.id);
+    }
+    return this.tasks;
+  }
+
+  getTodoTasks() {
+    return this.tasks.filter(task =>
+      task.status?.toUpperCase() === 'TODO' ||
+      task.status?.toUpperCase() === 'TO_DO'
     );
   }
-  return this.tasks;
- }
-    getTodoTasks() {
-    return this.tasks.filter(task =>
-        task.status?.toUpperCase() === 'TODO' ||
-        task.status?.toUpperCase() === 'TO_DO'
-    );
-    }
 
-    getInProgressTasks() {
+  getInProgressTasks() {
     return this.tasks.filter(task =>
-        task.status?.toUpperCase() === 'IN_PROGRESS' ||
-        task.status?.toUpperCase() === 'INPROGRESS'
+      task.status?.toUpperCase() === 'IN_PROGRESS' ||
+      task.status?.toUpperCase() === 'INPROGRESS'
     );
-    }
+  }
 
-    getDoneTasks() {
-    return this.tasks.filter(task =>
-        task.status?.toUpperCase() === 'DONE'
-    );
-    }
-    getAvatarStyle(name: string): object {
+  getDoneTasks() {
+    return this.tasks.filter(task => task.status?.toUpperCase() === 'DONE');
+  }
+
+  getAvatarStyle(name: string): object {
     const colors = [
       { background: '#dbeafe', color: '#2563eb' },
       { background: '#dcfce7', color: '#16a34a' },
@@ -222,5 +171,12 @@ export class Tasks implements OnInit {
     if (!name) return { background: '#dbeafe', color: '#2563eb' };
     const index = name.charCodeAt(0) % colors.length;
     return colors[index];
+  }
+  getManagers(): any[] {
+   return this.users.filter((u: any) => u.role?.nom === 'MANAGER');
+  }
+
+  getEmployees(): any[] {
+    return this.users.filter((u: any) => u.role?.nom === 'EMPLOYEE');
   }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthResponse, LoginRequest, RegisterRequest } from '../models/models';
 
@@ -8,7 +9,10 @@ export class AuthService {
 
   private apiUrl = 'http://localhost:8080/api/auth';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
   // =========================
   // AUTH API
@@ -43,8 +47,6 @@ export class AuthService {
     return user ? JSON.parse(user) : null;
   }
 
-  
-
   getRole(): string {
     return this.getUser()?.role ?? '';
   }
@@ -57,10 +59,8 @@ export class AuthService {
     return !!this.getToken();
   }
 
-
-
   isAdmin(): boolean {
-    return this.getRole() === 'ADMIN' || this.getRole() === 'SUPER_ADMIN';
+    return this.getRole() === 'ADMIN';
   }
 
   isManager(): boolean {
@@ -76,15 +76,18 @@ export class AuthService {
     return this.isAdmin() || this.isManager();
   }
 
-  
+  redirectByRole(role: string): void {
+    this.router.navigate(['/dashboard']);
+  }
 
   getPermissions(): string[] {
     const role = this.getRole();
 
-    if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
+    if (role === 'ADMIN') {
       return [
         'VIEW_DASHBOARD', 'VIEW_USERS', 'VIEW_TASKS', 'CREATE_TASK',
-        'VIEW_ROLES', 'VIEW_AUDIT', 'VIEW_ANNOUNCEMENTS', 'VIEW_PROFILE', 'EDIT_USERS', 'DELETE_ANNOUNCEMENT'
+        'UPDATE_TASK', 'VIEW_ROLES', 'VIEW_AUDIT', 'VIEW_ANNOUNCEMENTS',
+        'VIEW_PROFILE', 'EDIT_USERS', 'DELETE_ANNOUNCEMENT'
       ];
     }
 

@@ -45,11 +45,6 @@ export class Dashboard implements OnInit {
 
   ngOnInit(): void {
 
-    if (this.authService.getRole() === 'SUPER_ADMIN') {
-      this.router.navigate(['/super-admin']);
-      return;
-    }
-
     if (this.authService.isEmployee()) {
       this.loadMyTasks();
     } else {

@@ -25,13 +25,12 @@ export class Login {
     }
   }
 
- redirectByRole(role: string): void {
-  if (role === 'SUPER_ADMIN') {
-    this.router.navigate(['/super-admin']);
-  } else if (role === 'ADMIN' || role === 'MANAGER') {
+redirectByRole(role: string): void {
+
+ if (role === 'ADMIN' || role === 'MANAGER' || role === 'EMPLOYEE') {
     this.router.navigate(['/dashboard']);
   } else {
-    this.router.navigate(['/profile']);
+    this.router.navigate(['/dashboard']);
   }
 }
 

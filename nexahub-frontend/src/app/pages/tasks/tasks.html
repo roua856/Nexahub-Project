@@ -24,15 +24,20 @@
       <div class="form-grid">
         <input type="text" placeholder="Task title" [(ngModel)]="newTask.title">
         <select [(ngModel)]="newTask.assignedTo">
-          <option [ngValue]="null">Assign employee</option>
-          <option *ngFor="let user of users" [ngValue]="user">{{ user.nom }}</option>
+          <option [ngValue]="null">Assign to...</option>
+          <optgroup label="Managers">
+            <option *ngFor="let user of getManagers()" [ngValue]="user">{{ user.nom }}</option>
+          </optgroup>
+          <optgroup label="Employees">
+            <option *ngFor="let user of getEmployees()" [ngValue]="user">{{ user.nom }}</option>
+          </optgroup>
         </select>
         <select [(ngModel)]="newTask.priority">
           <option value="LOW">LOW</option>
           <option value="MEDIUM">MEDIUM</option>
           <option value="HIGH">HIGH</option>
         </select>
-        <input type="date" [(ngModel)]="newTask.dueDate">
+        <input type="date" [(ngModel)]="newTask.dueDate" [min]="today">
       </div>
       <textarea rows="3" placeholder="Task description" [(ngModel)]="newTask.description"></textarea>
       <button class="create-btn" (click)="createTask()">
@@ -63,7 +68,7 @@
               <span class="card-name">{{ task.assignedTo?.nom }}</span>
             </div>
             <div class="card-date">📅 {{ task.dueDate | date:'dd/MM/yyyy' }}</div>
-            <div *ngIf="authService.hasPermission('UPDATE_TASK')" class="employee-actions">
+            <div *ngIf="authService.hasPermission('UPDATE_TASK') && isAssignedToMe(task)" class="employee-actions">
               <button class="progress-btn" (click)="updateStatus(task.id, 'IN_PROGRESS')">Start</button>
             </div>
           </div>
@@ -94,7 +99,7 @@
               <span class="card-name">{{ task.assignedTo?.nom }}</span>
             </div>
             <div class="card-date">📅 {{ task.dueDate | date:'dd/MM/yyyy' }}</div>
-            <div *ngIf="authService.hasPermission('UPDATE_TASK')" class="employee-actions">
+            <div *ngIf="authService.hasPermission('UPDATE_TASK') && isAssignedToMe(task)" class="employee-actions">
               <button class="done-btn-table" (click)="updateStatus(task.id, 'DONE')">Mark Done</button>
             </div>
           </div>
