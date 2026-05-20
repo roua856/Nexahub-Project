@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class AnnouncementService {
 
-  private url = 'http://localhost:8080/api/announcements';
+  private url = 'http://localhost:9090/api/announcements';
 
   constructor(private http: HttpClient) {}
 

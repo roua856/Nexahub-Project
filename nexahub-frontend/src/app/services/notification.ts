@@ -6,7 +6,7 @@ import { AppNotification } from '../models/models';
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
 
-  private api = 'http://localhost:8080/api/notifications';
+  private api = 'http://localhost:9090/api/notifications';
 
   constructor(private http: HttpClient) {}
 
