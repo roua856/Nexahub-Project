@@ -52,12 +52,18 @@ public class AuthService {
         Role role = roleRepository.findByNom(roleName)
                 .orElseGet(() -> {
                     Role r = new Role();
+
                     r.setNom(roleName);
+
                     r.setDescription(
                             isFirstUser
                                     ? "Company administrator"
                                     : "Default user role"
                     );
+
+                    
+                    r.setCompany(request.getCompany());
+
                     return roleRepository.save(r);
                 });
 
