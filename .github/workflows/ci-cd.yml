@@ -43,17 +43,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd Nexahub-frontend
+          cd nexahub-frontend
           npm ci
 
       - name: Build Angular
         run: |
-          cd Nexahub-frontend
+          cd nexahub-frontend
           npm run build -- --configuration production
 
       - name: Build Docker image
         run: |
-          cd Nexahub-frontend
+          cd nexahub-frontend
           docker build -t nexahub-frontend .
 
   docker-compose-test:
