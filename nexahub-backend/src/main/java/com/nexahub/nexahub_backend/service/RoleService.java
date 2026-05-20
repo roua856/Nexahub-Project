@@ -19,8 +19,8 @@ public class RoleService {
     @Autowired
     private PermissionRepository permissionRepository;
 
-    public List<Role> getAll() {
-        return roleRepository.findAll();
+    public List<Role> getByCompany(String company) {
+        return roleRepository.findByCompany(company);
     }
 
     public Role getById(Long id) {
@@ -29,9 +29,15 @@ public class RoleService {
     }
 
     public Role create(Role role) {
-        if (roleRepository.existsByNom(role.getNom())) {
-            throw new RuntimeException("Role already exists");
+
+        if (role.getCompany() == null) {
+            throw new RuntimeException("Company missing");
         }
+
+        if (roleRepository.existsByNomAndCompany(role.getNom(), role.getCompany())) {
+            throw new RuntimeException("Role already exists in this company");
+        }
+
         return roleRepository.save(role);
     }
 

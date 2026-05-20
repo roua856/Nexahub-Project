@@ -10,13 +10,13 @@ import lombok.Data;
 @Entity
 @Data
 public class Permission {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String nom;
 
     private String description;
+    private String company;
 }

@@ -14,7 +14,7 @@ import { UserService } from '../../services/user';
   styleUrl: './tasks.scss'
 })
 export class Tasks implements OnInit {
-
+  
   tasks: any[] = [];
   users: any[] = [];
   myTasks: any[] = [];

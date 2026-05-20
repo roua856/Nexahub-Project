@@ -2,140 +2,120 @@
   <app-sidebar></app-sidebar>
   <div class="main-content">
 
-    <div class="page-header">
+    <div class="profile-header">
       <h2>My Account</h2>
+      <p>Manage your profile and security</p>
     </div>
 
     <div *ngIf="message" class="alert-success">{{ message }}</div>
     <div *ngIf="error" class="alert-error">{{ error }}</div>
 
-    <div class="row g-3">
-     <div [class]="showPasswordForm ? 'col-md-6' : 'col-md-12'">
-        <div class="card-box">
-          <div style="display:flex; align-items:center;
-                      gap:16px; margin-bottom:20px;">
-            <div class="avatar"
-                 style="width:54px; height:54px; font-size:20px;">
+    <div class="profile-grid">
+
+      <!-- LEFT COLUMN -->
+      <div class="left-col">
+
+        <!-- PROFILE CARD -->
+        <div class="profile-card">
+          <div class="profile-top">
+            <div class="profile-avatar">
               {{ user?.nom?.charAt(0)?.toUpperCase() || '?' }}
             </div>
             <div>
-              <div style="font-size:17px; font-weight:600;">
-                {{ user?.nom || 'Loading...' }}
-              </div>
-              <div style="color:#636e72; font-size:14px;">
-                {{ user?.email }}
-              </div>
-              <div style="font-size:12px; color:#636e72;">
-                {{ user?.company }} ·
-                Member since {{ user?.createdAt | date:'dd/MM/yyyy' }}
-              </div>
+              <div class="profile-name">{{ user?.nom }}</div>
+              <div class="profile-email">{{ user?.email }}</div>
+              <div class="profile-since">{{ user?.company }} · Member since {{ user?.createdAt | date:'dd/MM/yyyy' }}</div>
             </div>
           </div>
 
-          <div style="border-top:1px solid #f0f0f0; padding-top:14px;">
-            <div style="display:flex; justify-content:space-between;
-                        padding:10px 0; border-bottom:1px solid #f0f0f0;
-                        font-size:14px;">
-              <span style="color:#636e72;">Role</span>
-              <span [class]="getRoleBadge()">
-                {{ user?.role?.nom || 'Loading...' }}
-              </span>
+          <div class="profile-rows">
+            <div class="profile-row">
+              <span class="profile-label">Role</span>
+              <span [class]="getRoleBadge()">{{ user?.role?.nom }}</span>
             </div>
-            <div style="display:flex; justify-content:space-between;
-                        padding:10px 0; border-bottom:1px solid #f0f0f0;
-                        font-size:14px;">
-              <span style="color:#636e72;">Company</span>
-              <span style="font-weight:500;">{{ user?.company }}</span>
+            <div class="profile-row">
+              <span class="profile-label">Company</span>
+              <span class="profile-value">{{ user?.company }}</span>
             </div>
-            <div style="display:flex; justify-content:space-between;
-                        padding:10px 0; border-bottom:1px solid #f0f0f0;
-                        font-size:14px;">
-              <span style="color:#636e72;">Status</span>
-              <span [class]="user?.actif ?
-                'badge-role badge-active' :
-                'badge-role badge-blocked'">
+            <div class="profile-row">
+              <span class="profile-label">Status</span>
+              <span [class]="user?.actif ? 'badge-active' : 'badge-blocked'">
                 {{ user?.actif ? 'Active' : 'Blocked' }}
               </span>
             </div>
-            <div style="display:flex; justify-content:space-between;
-                        padding:10px 0; font-size:14px;">
-              <span style="color:#636e72;">Member since</span>
-              <span>{{ user?.createdAt | date:'dd/MM/yyyy' }}</span>
+            <div class="profile-row">
+              <span class="profile-label">Member since</span>
+              <span class="profile-value">{{ user?.createdAt | date:'dd/MM/yyyy' }}</span>
             </div>
           </div>
 
-          <button class="btn-secondary"
-                  style="width:100%; margin-top:14px; padding:10px;"
-                  (click)="showPasswordForm=!showPasswordForm">
-            {{ showPasswordForm ? '✕ Cancel' : 'Change password' }}
+          <button class="pwd-toggle-btn" (click)="showPasswordForm = !showPasswordForm">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+              <rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            {{ showPasswordForm ? 'Cancel' : 'Change password' }}
           </button>
         </div>
 
-        <div class="card-box" style="margin-top:16px;">
-          <h6 style="font-weight:600; margin-bottom:12px;">
-            My permissions
-          </h6>
-          <div *ngIf="!user?.role?.permissions?.length"
-               style="color:#636e72; font-size:14px;
-                      text-align:center; padding:16px;">
-            No permissions assigned to your role
-          </div>
-          <div *ngFor="let perm of user?.role?.permissions"
-               style="display:flex; align-items:center; gap:10px;
-                      padding:10px 0; border-bottom:1px solid #f0f0f0;
-                      font-size:14px;">
-            <span style="color:#0984e3; font-weight:600;">✓</span>
-            <div>
-              <div style="font-weight:500;">{{ perm.nom }}</div>
-              <div style="font-size:12px; color:#636e72;">
-                {{ perm.description }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6" *ngIf="showPasswordForm">
-        <div class="card-box">
-          <h6 style="font-weight:600; margin-bottom:16px;">
-            Change password
-          </h6>
-          <div class="form-group">
+        <!-- PASSWORD FORM -->
+        <div class="pwd-card" *ngIf="showPasswordForm">
+          <h3>Change password</h3>
+          <div class="pwd-field">
             <label>Current password</label>
-            <input type="password" class="form-control"
-                   [(ngModel)]="passwordData.ancienMotDePasse"
-                   placeholder="••••••••">
+            <input type="password" [(ngModel)]="passwordData.ancienMotDePasse" placeholder="••••••••">
           </div>
-          <div class="form-group">
+          <div class="pwd-field">
             <label>New password</label>
-            <input type="password" class="form-control"
-                   [(ngModel)]="passwordData.nouveauMotDePasse"
-                   placeholder="••••••••">
+            <input type="password" [(ngModel)]="passwordData.nouveauMotDePasse" placeholder="••••••••">
           </div>
-          <div class="form-group">
+          <div *ngIf="passwordData.nouveauMotDePasse" class="pwd-strength"
+            [class.strong]="passwordData.nouveauMotDePasse.length >= 8"
+            [class.weak]="passwordData.nouveauMotDePasse.length < 8">
+            {{ passwordData.nouveauMotDePasse.length >= 8 ? '✓ Strong password' : '✗ Too short (min 8 chars)' }}
+          </div>
+          <div class="pwd-field">
             <label>Confirm new password</label>
-            <input type="password" class="form-control"
-                   [(ngModel)]="passwordData.confirm"
-                   placeholder="••••••••">
+            <input type="password" [(ngModel)]="passwordData.confirm" placeholder="••••••••">
           </div>
-          <div *ngIf="passwordData.nouveauMotDePasse"
-               style="padding:8px 12px; border-radius:8px;
-                      font-size:12px; margin-bottom:12px;"
-               [style.background]="passwordData.nouveauMotDePasse.length >= 8
-                 ? '#eaf3de' : '#fcebeb'"
-               [style.color]="passwordData.nouveauMotDePasse.length >= 8
-                 ? '#27500a' : '#791f1f'">
-            Password strength:
-            {{ passwordData.nouveauMotDePasse.length >= 8
-               ? 'Strong ✓' : 'Too short' }}
-          </div>
-          <button class="btn-primary"
-                  (click)="changePassword()"
-                  [disabled]="loading">
+          <button class="pwd-save-btn" (click)="changePassword()" [disabled]="loading">
             {{ loading ? 'Updating...' : 'Update password' }}
           </button>
         </div>
+
       </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="right-col">
+        <div class="perms-card">
+          <div class="perms-header">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <h3>My Permissions</h3>
+          </div>
+
+          <div *ngIf="!user?.role?.permissions?.length" class="perms-empty">
+            No permissions assigned
+          </div>
+
+          <div class="perm-list">
+            <div *ngFor="let perm of user?.role?.permissions" class="perm-item">
+              <div class="perm-check">
+                <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
+                  <path d="M20 6L9 17l-5-5" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div>
+                <div class="perm-name">{{ perm.nom }}</div>
+                <div class="perm-desc">{{ perm.description }}</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

@@ -16,10 +16,11 @@ public class PermissionService {
         return permissionRepository.findAll();
     }
 
+    public List<Permission> getByCompany(String company) {
+        return permissionRepository.findByCompany(company);
+    }
+
     public Permission create(Permission permission) {
-        if (permissionRepository.existsByNom(permission.getNom())) {
-            throw new RuntimeException("Permission already exists");
-        }
         return permissionRepository.save(permission);
     }
 

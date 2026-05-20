@@ -60,3 +60,10 @@ export interface Task {
   assignedTo: Utilisateur;
   createdBy: Utilisateur;
 }
+export interface AppNotification {
+  id: number;
+  message: string;
+  type: string;
+  read: boolean;
+  createdAt: string;
+}

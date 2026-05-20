@@ -1,0 +1,31 @@
+<div class="notif-layout">
+  <app-sidebar></app-sidebar>
+  <div class="main-content">
+    <div class="notif-page-header">
+      <div>
+        <h2>Notifications</h2>
+        <p>Your recent activity and updates</p>
+      </div>
+    </div>
+
+    <div class="notif-page-list">
+      <div *ngFor="let n of notifications" class="notif-page-item" [class.unread]="!n.read">
+        <div class="notif-page-icon">
+          <span *ngIf="n.type === 'TASK_ASSIGNED'">📋</span>
+          <span *ngIf="n.type === 'STATUS_CHANGED'">🔄</span>
+          <span *ngIf="n.type === 'ANNOUNCEMENT'">📢</span>
+          <span *ngIf="n.type === 'ROLE_CHANGED'">🛡️</span>
+        </div>
+        <div class="notif-page-content">
+          <div class="notif-page-msg">{{ n.message }}</div>
+          <div class="notif-page-time">{{ n.createdAt | date:'dd/MM/yyyy HH:mm' }}</div>
+        </div>
+        <div *ngIf="!n.read" class="notif-unread-dot"></div>
+      </div>
+      <div *ngIf="notifications.length === 0" class="notif-page-empty">
+        <div class="empty-icon">🔔</div>
+        <p>No notifications yet</p>
+      </div>
+    </div>
+  </div>
+</div>

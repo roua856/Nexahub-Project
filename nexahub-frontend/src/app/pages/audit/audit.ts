@@ -12,6 +12,7 @@ import { HistoriqueAction } from '../../models/models';
   styleUrl: './audit.scss'
 })
 export class Audit implements OnInit {
+  
 
   actions: HistoriqueAction[] = [];
   filtered: HistoriqueAction[] = [];

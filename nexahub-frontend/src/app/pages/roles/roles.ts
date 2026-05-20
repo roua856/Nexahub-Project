@@ -129,5 +129,6 @@ export class Roles implements OnInit {
     if (n === 'GUEST') return 'badge-role badge-guest';
     return 'badge-role badge-user';
   }
+   
     
 }

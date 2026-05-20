@@ -11,16 +11,45 @@
         <p>{{ user?.company }} · {{ authService.getRole() }}</p>
       </div>
       <div class="header-actions">
-        <div class="notification-btn">🔔</div>
-        <div class="mini-user" [ngStyle]="getAvatarStyle(user?.nom)" 
+        <div class="notif-wrapper" style="position:relative;">
+        <div class="notification-btn" (click)="toggleNotifications()">
+          🔔
+          <span *ngIf="unreadCount > 0" class="notif-badge">{{ unreadCount }}</span>
+        </div>
+
+        <div *ngIf="showNotifications" class="notif-dropdown">
+          <div class="notif-header">
+            <span>Notifications</span>
+            <span class="notif-count">{{ notifications.length }}</span>
+          </div>
+
+          <div *ngFor="let n of notifications" class="notif-item" [class.unread]="!n.read">
+            <div class="notif-icon">
+              <span *ngIf="n.type === 'TASK_ASSIGNED'">📋</span>
+              <span *ngIf="n.type === 'STATUS_CHANGED'">🔄</span>
+              <span *ngIf="n.type === 'ANNOUNCEMENT'">📢</span>
+              <span *ngIf="n.type === 'ROLE_CHANGED'">🛡️</span>
+            </div>
+
+            <div>
+              <div class="notif-msg">{{ n.message }}</div>
+              <div class="notif-time">{{ n.createdAt | date:'dd/MM HH:mm' }}</div>
+            </div>
+          </div>
+
+          <div *ngIf="notifications.length === 0" class="notif-empty">
+            No notifications
+          </div>
+        </div>
+      </div>
+        <div class="mini-user" [ngStyle]="getAvatarStyle(user?.nom)"
             (click)="showProfileMenu = !showProfileMenu"
             style="cursor:pointer; position:relative;">
           {{ user?.nom?.charAt(0)?.toUpperCase() }}
-          
+
           <!-- DROPDOWN -->
           <div *ngIf="showProfileMenu" class="profile-dropdown">
             <div class="pd-user">
-              
               <div>
                 <div class="pd-name">{{ user?.nom }}</div>
                 <div class="pd-role">{{ authService.getRole() }}</div>
@@ -193,5 +222,6 @@
     </div>
 
   </div>
+  
 
 </div>

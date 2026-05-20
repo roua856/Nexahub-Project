@@ -8,6 +8,7 @@ import { RoleService } from '../../services/role';
 import { AuthService } from '../../services/auth';
 
 import { Utilisateur, Role } from '../../models/models';
+import { NotificationService } from '../../services/notification';
 
 @Component({
   selector: 'app-users',
@@ -17,7 +18,7 @@ import { Utilisateur, Role } from '../../models/models';
   styleUrls: ['./users.scss']
 })
 export class Users implements OnInit {
-
+   
   users: Utilisateur[] = [];
   roles: Role[] = [];
 
@@ -54,7 +55,8 @@ export class Users implements OnInit {
     private userService: UserService,
     private roleService: RoleService,
     public authService: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private notifService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -457,5 +459,6 @@ export class Users implements OnInit {
 
     }
   }
+  
 
 }

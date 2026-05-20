@@ -13,6 +13,7 @@ import com.nexahub.nexahub_backend.entites.Role;
 import com.nexahub.nexahub_backend.entites.Utilisateur;
 import com.nexahub.nexahub_backend.repositories.RoleRepository;
 import com.nexahub.nexahub_backend.repositories.UtilisateurRepository;
+import com.nexahub.nexahub_backend.service.NotificationService;
 
 @Service
 public class UtilisateurService {
@@ -28,6 +29,9 @@ public class UtilisateurService {
 
     @Autowired
     private HistoriqueService historiqueService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     public List<Utilisateur> getAll() {
         return utilisateurRepository.findAll();
@@ -71,7 +75,6 @@ public class UtilisateurService {
                 .orElseGet(() -> {
 
                     Role r = new Role();
-
                     r.setNom("USER");
                     r.setDescription("Default role");
 
@@ -82,14 +85,9 @@ public class UtilisateurService {
 
         user.setNom(request.getNom());
         user.setEmail(request.getEmail());
-
-        user.setMotDePasse(
-                passwordEncoder.encode(request.getMotDePasse()));
-
+        user.setMotDePasse(passwordEncoder.encode(request.getMotDePasse()));
         user.setCompany(currentUser.getCompany());
-
         user.setRole(defaultRole);
-
         user.setActif(true);
 
         utilisateurRepository.save(user);
@@ -113,12 +111,22 @@ public class UtilisateurService {
             user.setNom(request.getNom());
         }
 
+        // =========================
+        // ROLE CHANGE + NOTIFICATION
+        // =========================
         if (request.getRoleId() != null) {
 
             Role role = roleRepository.findById(request.getRoleId())
                     .orElseThrow(() -> new RuntimeException("Role not found"));
 
             user.setRole(role);
+
+            // ✅ NOTIFICATION ADDED
+            notificationService.notify(
+                    user,
+                    "Your role has been changed to " + role.getNom(),
+                    "ROLE_CHANGED"
+            );
 
             historiqueService.logAction(
                     currentUser,
@@ -172,7 +180,6 @@ public class UtilisateurService {
 
         Utilisateur user = getById(id);
 
-        // block user instead of deleting
         user.setActif(false);
 
         utilisateurRepository.save(user);

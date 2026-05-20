@@ -12,5 +12,5 @@ import com.nexahub.nexahub_backend.entites.Utilisateur;
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findByAssignedTo(Utilisateur user);
-
+    List<Task> findByCompany(String company);
 }

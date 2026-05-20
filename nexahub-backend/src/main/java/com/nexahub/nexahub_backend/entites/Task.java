@@ -39,4 +39,5 @@ public class Task {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by_id")
     private Utilisateur createdBy;
+    private String company;
 }
