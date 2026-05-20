@@ -65,10 +65,10 @@ jobs:
 
       - name: Build and run with Docker Compose
         run: |
-          docker-compose up --build -d
+          docker compose up --build -d
           sleep 30
           curl -f http://localhost/index.html || exit 1
           curl -f http://localhost:9090/api/auth/test || exit 1
 
       - name: Stop containers
-        run: docker-compose down
+        run: docker compose down

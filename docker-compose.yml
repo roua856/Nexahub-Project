@@ -43,7 +43,7 @@ services:
 
   frontend:
     build:
-      context: ./Nexahub-frontend
+      context: ./nexahub-frontend
       dockerfile: Dockerfile
     container_name: nexahub-frontend
     restart: always
