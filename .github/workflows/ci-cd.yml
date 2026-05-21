@@ -68,7 +68,7 @@ jobs:
           docker compose up --build -d
           sleep 30
           curl -f http://localhost/index.html || exit 1
-          curl -f http://localhost:9090/api/auth/test || exit 1
+          curl -f http://localhost:8080/api/auth/test || exit 1
 
       - name: Stop containers
         run: docker compose down

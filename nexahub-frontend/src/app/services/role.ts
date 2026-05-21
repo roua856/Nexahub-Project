@@ -6,7 +6,7 @@ import { Role } from '../models/models';
 @Injectable({ providedIn: 'root' })
 export class RoleService {
 
-  private apiUrl = 'http://localhost:9090/api/roles';
+  private apiUrl = 'http://localhost:8080/api/roles';
 
   constructor(private http: HttpClient) {}
 

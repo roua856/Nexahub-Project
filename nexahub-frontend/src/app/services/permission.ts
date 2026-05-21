@@ -6,7 +6,7 @@ import { Permission } from '../models/models';
 @Injectable({ providedIn: 'root' })
 export class PermissionService {
 
-  private apiUrl = 'http://localhost:9090/api/permissions';
+  private apiUrl = 'http://localhost:8080/api/permissions';
 
   constructor(private http: HttpClient) {}
 

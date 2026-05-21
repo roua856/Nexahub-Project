@@ -6,7 +6,7 @@ import { HistoriqueAction } from '../models/models';
 @Injectable({ providedIn: 'root' })
 export class HistoriqueService {
 
-  private apiUrl = 'http://localhost:9090/api/history';
+  private apiUrl = 'http://localhost:8080/api/history';
 
   constructor(private http: HttpClient) {}
 
