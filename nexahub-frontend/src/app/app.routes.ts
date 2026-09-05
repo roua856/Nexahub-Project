@@ -44,5 +44,12 @@ export const routes: Routes = [
       import('./pages/super-admin/super-admin').then(m => m.SuperAdmin),
     canActivate: [authGuard]
   },
+
+  {
+    path: 'tasks',
+    loadComponent: () =>
+      import('./pages/tasks/tasks').then(m => m.Tasks),
+    canActivate: [authGuard]
+ },
   { path: '**', redirectTo: '/login' }
 ];

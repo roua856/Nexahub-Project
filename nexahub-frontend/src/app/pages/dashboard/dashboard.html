@@ -1,83 +1,199 @@
-<div style="display:flex">
+<div class="dashboard-layout">
+
   <app-sidebar></app-sidebar>
+
   <div class="main-content">
 
-    <div class="page-header">
-      <h2>Dashboard</h2>
-      <span style="font-size:13px; color:#636e72;">
-        Welcome, {{ user?.nom }} · {{ user?.company }}
-      </span>
+    <!-- HEADER -->
+    <div class="top-header">
+
+      <div>
+        <h2>
+          Welcome back, {{ user?.nom }} 👋
+        </h2>
+
+        <p>
+          {{ user?.company }} Workspace ·
+          {{ authService.getRole() }}
+        </p>
+      </div>
+
+      <div class="header-actions">
+
+        <div class="notification-btn">
+          🔔
+        </div>
+
+        <div class="mini-user">
+          {{ user?.nom?.charAt(0)?.toUpperCase() }}
+        </div>
+
+      </div>
+
     </div>
 
-    <!-- Stats -->
-    <div class="row g-3 mb-4">
-      <div class="col-md-3">
-        <div class="stat-card">
-          <div class="number">{{ totalUsers }}</div>
-          <div class="label">Total users</div>
+    <!-- STATS -->
+    <div class="stats-grid">
+
+      <div class="stat-card">
+        <div class="stat-icon blue">
+          👥
+        </div>
+
+        <div>
+          <div class="stat-number">
+            {{ totalUsers }}
+          </div>
+
+          <div class="stat-label">
+            Total Users
+          </div>
         </div>
       </div>
-      <div class="col-md-3">
-        <div class="stat-card">
-          <div class="number">{{ totalRoles }}</div>
-          <div class="label">Roles</div>
+
+      <div class="stat-card">
+        <div class="stat-icon purple">
+          🛡️
+        </div>
+
+        <div>
+          <div class="stat-number">
+            {{ totalRoles }}
+          </div>
+
+          <div class="stat-label">
+            Roles
+          </div>
         </div>
       </div>
-      <div class="col-md-3">
-        <div class="stat-card">
-          <div class="number">{{ blockedUsers }}</div>
-          <div class="label">Blocked users</div>
+
+      <div class="stat-card">
+        <div class="stat-icon orange">
+          🚫
+        </div>
+
+        <div>
+          <div class="stat-number">
+            {{ blockedUsers }}
+          </div>
+
+          <div class="stat-label">
+            Blocked Users
+          </div>
         </div>
       </div>
-      <div class="col-md-3">
-        <div class="stat-card">
-          <div class="number">{{ actionsToday }}</div>
-          <div class="label">Actions today</div>
+
+      <div class="stat-card">
+        <div class="stat-icon green">
+          📜
+        </div>
+
+        <div>
+          <div class="stat-number">
+            {{ actionsToday }}
+          </div>
+
+          <div class="stat-label">
+            Actions Today
+          </div>
         </div>
       </div>
+
     </div>
 
-    <!-- Recent activity -->
-    <div class="card-box">
-      <h5 style="font-weight:600; margin-bottom:16px;">Recent activity</h5>
-      <table>
-        <thead>
-          <tr>
-            <th>Time</th>
-            <th>User</th>
-            <th>Action</th>
-            <th>Details</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let action of recentActions">
-            <td style="color:#636e72; font-size:12px;">
-              {{ action.dateAction | date:'HH:mm' }}
-            </td>
-            <td>
-              <div style="display:flex; align-items:center; gap:8px;">
-                <div class="avatar">
-                  {{ action.utilisateur?.nom?.charAt(0)?.toUpperCase() }}
+    <!-- EMPLOYEE WELCOME -->
+    <div *ngIf="authService.getRole() === 'EMPLOYEE'"
+         class="employee-box">
+
+      <h3>
+        Your workspace is ready 🚀
+      </h3>
+
+      <p>
+        Soon you'll be able to manage tasks,
+        receive notifications and collaborate with your team.
+      </p>
+
+    </div>
+
+    <!-- RECENT ACTIVITY -->
+    <div class="activity-card">
+
+      <div class="section-header">
+        <h3>
+          Recent Activity
+        </h3>
+
+        <span>
+          Last 5 actions
+        </span>
+      </div>
+
+      <div class="activity-table-wrapper">
+
+        <table class="activity-table">
+
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>User</th>
+              <th>Action</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let action of recentActions">
+
+              <td class="time-cell">
+                {{ action.dateAction | date:'HH:mm' }}
+              </td>
+
+              <td>
+
+                <div class="user-row">
+
+                  <div class="avatar">
+                    {{ action.utilisateur?.nom?.charAt(0)?.toUpperCase() }}
+                  </div>
+
+                  <span>
+                    {{ action.utilisateur?.nom }}
+                  </span>
+
                 </div>
-                {{ action.utilisateur?.nom }}
-              </div>
-            </td>
-            <td>
-              <span [class]="getBadgeClass(action.action)">
-                {{ action.action }}
-              </span>
-            </td>
-            <td style="color:#636e72;">{{ action.details }}</td>
-          </tr>
-          <tr *ngIf="recentActions.length === 0">
-            <td colspan="4"
-                style="text-align:center; color:#636e72; padding:30px;">
-              No activity yet
-            </td>
-          </tr>
-        </tbody>
-      </table>
+
+              </td>
+
+              <td>
+                <span [class]="getBadgeClass(action.action)">
+                  {{ action.action }}
+                </span>
+              </td>
+
+              <td class="details-cell">
+                {{ action.details }}
+              </td>
+
+            </tr>
+
+            <tr *ngIf="recentActions.length === 0">
+
+              <td colspan="4" class="empty-row">
+                No recent activity
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
     </div>
 
   </div>
+
 </div>

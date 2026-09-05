@@ -13,13 +13,23 @@ export class SidebarComponent {
 
   user: any;
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.user = this.authService.getUser();
   }
 
+  getRole(): string {
+    return this.authService.getRole();
+  }
+
   isAdmin(): boolean {
-    const role = this.authService.getRole();
-    return role === 'ADMIN' || role === 'SUPER_ADMIN';
+    return this.getRole() === 'ADMIN' || this.getRole() === 'SUPER_ADMIN';
+  }
+
+  isAdminOrManager(): boolean {
+    return this.isAdmin() || this.getRole() === 'MANAGER';
   }
 
   logout(): void {

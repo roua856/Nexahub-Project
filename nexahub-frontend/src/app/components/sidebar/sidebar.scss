@@ -1,0 +1,140 @@
+.sidebar{
+    width: 270px;
+    min-height: 100vh;
+    background: #111827;
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    padding: 24px 18px;
+
+    position: sticky;
+    top: 0;
+}
+
+.logo{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    margin-bottom: 32px;
+}
+
+.logo-icon{
+    width: 48px;
+    height: 48px;
+
+    border-radius: 14px;
+
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+}
+
+.logo-title{
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.logo-subtitle{
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 2px;
+}
+
+.nav-item{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    color: #d1d5db;
+    text-decoration: none;
+
+    padding: 14px 16px;
+    border-radius: 14px;
+
+    margin-bottom: 8px;
+
+    transition: 0.2s ease;
+
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.nav-item:hover{
+    background: rgba(255,255,255,0.08);
+    color: white;
+}
+
+.nav-item.active{
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: white;
+}
+
+.nav-icon{
+    font-size: 18px;
+}
+
+.user-card{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    background: rgba(255,255,255,0.06);
+
+    border-radius: 16px;
+
+    padding: 14px;
+    margin-bottom: 16px;
+}
+
+.avatar{
+    width: 44px;
+    height: 44px;
+
+    border-radius: 50%;
+
+    background: linear-gradient(135deg, #60a5fa, #2563eb);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 700;
+}
+
+.user-name{
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.user-role{
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 2px;
+}
+
+.logout{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    cursor: pointer;
+
+    padding: 14px 16px;
+    border-radius: 14px;
+
+    color: #fca5a5;
+
+    transition: 0.2s ease;
+}
+
+.logout:hover{
+    background: rgba(239,68,68,0.15);
+}

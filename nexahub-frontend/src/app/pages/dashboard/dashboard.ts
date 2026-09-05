@@ -23,7 +23,7 @@ export class Dashboard implements OnInit {
   recentActions: any[] = [];
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private userService: UserService,
     private roleService: RoleService,
     private historiqueService: HistoriqueService,
@@ -38,6 +38,7 @@ export class Dashboard implements OnInit {
       this.router.navigate(['/super-admin']);
       return;
     }
+
     this.userService.getByCompany(this.user.company).subscribe({
       next: (users) => {
         this.totalUsers = users.length;
@@ -45,16 +46,23 @@ export class Dashboard implements OnInit {
         this.cdr.detectChanges();
       }
     });
+
     this.roleService.getAll().subscribe({
       next: (roles) => {
-        this.totalRoles = roles.length;
+        this.totalRoles = roles.filter(r =>
+          r.nom !== 'SUPER_ADMIN' && r.nom !== 'USER'
+        ).length;
         this.cdr.detectChanges();
       }
     });
+
     this.historiqueService.getByCompany(this.user.company).subscribe({
       next: (actions) => {
+        const today = new Date().toDateString();
+        this.actionsToday = actions.filter(a =>
+          new Date(a.dateAction).toDateString() === today
+        ).length;
         this.recentActions = actions.slice(0, 5);
-        this.actionsToday = actions.length;
         this.cdr.detectChanges();
       }
     });
@@ -71,4 +79,7 @@ export class Dashboard implements OnInit {
       default: return 'badge bg-secondary';
     }
   }
+  isEmployee(): boolean {
+  return this.authService.getRole() === 'EMPLOYEE';
+}
 }
